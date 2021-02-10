@@ -1,6 +1,7 @@
 import React from 'react';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
+import { createStackNavigator } from 'react-navigation-stack';
 import { MaterialIcons, Ionicons, MaterialCommunityIcons} from '@expo/vector-icons'; 
 
 // screen
@@ -21,12 +22,12 @@ import styles, { StyleSheet } from './src/styles';
 
 // navigation
 const navigator = createSwitchNavigator({
-  // resolveAuth: ResolveAuthScreen,
-  // loginFlow: createStackNavigator({
-  //   Signin: SigninScreen,
-  //   Signup: SignupScreen
-  // }),
-  // joinTeam: JoinTeamScreen,
+  resolveAuth: ResolveAuthScreen,
+  loginFlow: createStackNavigator({
+    Signin: SigninScreen,
+    Signup: SignupScreen
+  }),
+  joinTeam: JoinTeamScreen,
   mainFlow: createBottomTabNavigator({
     home: {
       screen: HomeScreen,
@@ -56,6 +57,8 @@ const navigator = createSwitchNavigator({
       })
     },
   })
+}, {
+  initialRouteName: 'mainFlow'
 })
 
 const App = createAppContainer(navigator);
