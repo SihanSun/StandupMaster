@@ -32,16 +32,16 @@ const navigator = createSwitchNavigator({
     home: {
       screen: HomeScreen,
       navigationOptions: ({ navigation }) => ({
-        tabBarLabel: () => { return null}, 
+        title: 'Home',
         tabBarIcon: ({ focused }) => {
-          return <MaterialIcons name="group" size={30} color={focused? '#599DFF' : "black"} />
+          return <MaterialCommunityIcons name="home-variant" size={30} color={focused? '#599DFF' : "black"} />
         }
       })
     },
     card: {
       screen: CardScreen,
       navigationOptions: ({ navigation }) => ({
-        tabBarLabel: () => { return null}, 
+        title: 'Prepare',
         tabBarIcon: ({ focused }) => {
           return <MaterialCommunityIcons name="cards" size={30} color={focused? '#599DFF': "black"} />
         }
@@ -50,7 +50,7 @@ const navigator = createSwitchNavigator({
     settings: {
       screen: SettingsScreen,
       navigationOptions: ({ navigation }) => ({
-        tabBarLabel: () => { return null}, 
+        title: 'Settings',
         tabBarIcon: ({ focused }) => {
           return <Ionicons name="settings" size={30} color={focused? '#599DFF': "black"} />
         }
