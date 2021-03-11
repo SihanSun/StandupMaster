@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, SafeAreaView, TouchableOpacity, Image, ScrollView, FlatList } from 'react-native';
+import { View, Text, SafeAreaView, TouchableOpacity, Image, ScrollView, FlatList, RefreshControl } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; 
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 
@@ -25,6 +25,13 @@ class HomeScreen extends Component {
     //TODO
     this.fetchTeamMembers();
     this.fetchPastRecords();
+  }
+
+  onRefresh = () => {
+    this.setState({isRefreshing: true})
+    setTimeout(() => {
+      this.setState({isRefreshing: false})
+    }, 2000)
   }
 
   fetchTeamMembers = async () => {
@@ -93,7 +100,7 @@ class HomeScreen extends Component {
 
   renderHeader = () => {
     return (
-      <View style={{marginHorizontal: 20, marginTop: 20}}>
+      <View style={{marginHorizontal: 20, marginTop: 20, backgroundColor: 'white'}}>
         <View style={{flexDirection: 'row', marginBottom: 10}}>
           <Image
             style={styles.largeImage}
@@ -114,9 +121,7 @@ class HomeScreen extends Component {
         </View>
         <View style={{flexDirection: 'row', marginTop: 10}}>
           <View style={[{flex: 3, height: 80}, styles.textBox]}>
-            <ScrollView>
-              <Text>There is no new announcement today. Please arrive the meeting ontime</Text>
-            </ScrollView>
+            <Text>There is no new announcement today. Please arrive the meeting ontime</Text>
           </View>
           <View style={{flex: 1, alignItems: 'center'}}>
             <TouchableOpacity>
@@ -205,7 +210,7 @@ class HomeScreen extends Component {
   renderTabBar = () => {
     const { selectedIndex } = this.state;
     return (
-      <View style={{flexDirection: 'row', width: '100%', height:60, backgroundColor: 'white'}}>
+      <View style={{flexDirection: 'row', width: '100%', height:60}}>
         <TouchableOpacity 
           style={{
             borderBottomWidth: 3,
@@ -230,12 +235,22 @@ class HomeScreen extends Component {
     )
   }
 
-  render() {
+  renderStickyHeader = () => {
     return (
-      <SafeAreaView style={styles.container}>
+      <>
         {this.renderHeader()}
         {this.renderTabBar()}
-        {this.renderMainSection()}
+      </>
+    )
+  }
+
+  render() {
+    const { isRefreshing } = this.state;
+    return (
+      <SafeAreaView style={styles.container}>
+          {this.renderHeader()}
+          {this.renderTabBar()}
+          {this.renderMainSection()}
       </SafeAreaView>
     )
   }

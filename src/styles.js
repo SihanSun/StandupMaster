@@ -30,6 +30,15 @@ export default StyleSheet.create({
     borderRadius: 10,
     resizeMode: 'cover'
   },
+  cardStyle: {
+    marginHorizontal: 20,
+    marginTop: 20,
+    padding: 10,
+    backgroundColor: 'white',
+    borderColor: '#f2f0eb',
+    borderRadius: 10,
+    borderWidth: 2
+  },
   textBox: {
     backgroundColor: '#fafafa',
     borderRadius: 12,
