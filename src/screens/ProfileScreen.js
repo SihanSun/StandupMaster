@@ -91,13 +91,11 @@ class ProfileScreen extends Component {
   }
 
   onChangeProperty = ({name, value}) => {
-    console.log(name);
     switch (name) {
       case EMAIL:
         this.setState({email: value});
         break;
       case DISPLAY_NAME: 
-        console.log('change display name to ' + value);
         this.setState({displayName: value});
         break;
       case FIRST_NAME:

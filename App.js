@@ -27,6 +27,11 @@ const navigator = createSwitchNavigator({
   loginFlow: createStackNavigator({
     Signin: SigninScreen,
     Signup: SignupScreen
+  }, {
+    headerMode: 'none',
+    navigationOptions: {
+      gestureDirection: 'horizontal'
+    }
   }),
   joinTeam: JoinTeamScreen,
   mainFlow: createBottomTabNavigator({
