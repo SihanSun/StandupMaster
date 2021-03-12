@@ -33,7 +33,6 @@ class EditCard extends Component {
     const { title } = this.state;
     try {
       const content = await AsyncStorage.getItem(title);
-      console.log(content);
       if (content !== null) {
         this.setState({content});
       } 

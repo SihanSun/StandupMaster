@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
-import { View, Text, SafeAreaView, Button, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, SafeAreaView, Button, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, Dimensions } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 
 import styles from '../styles';
 
 const MAX_LENGTH = 30;
+const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 const EditPropertyScreen = ({ navigation, route}) => {
   const { name, value } = navigation.getParam('property', {name: '', value: ''});
   const [val, setVal] = useState(value);
 
   const onSave = navigation.getParam('onSave', () => {});
+
+  const { shouldLimit } = navigation.getParam('limit', { shouldLimit: true });
 
   const renderNavigation = () => {
     return (
@@ -38,27 +41,35 @@ const EditPropertyScreen = ({ navigation, route}) => {
   }
 
   const renderEditingSection = () => {
-    const len = val.length;
+    const len = val ? val.length : 0;
     return (
-      <View style={{marginHorizontal: 20, marginTop: 20}}>
+      <KeyboardAvoidingView 
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{marginHorizontal: 20, marginTop: 20, flex: 1}}>
         <View>
           <Text style={[styles.textRegular, {color: 'grey'}]}>{name}</Text>
           <View style={{marginVertical: 10, flexDirection: 'row', alignItems: 'center'}}>
             <TextInput
-              maxLength={MAX_LENGTH}
-              style={[{ height: 40 }, styles.textLarge]}
+              multiline={shouldLimit ? false : true}
+              maxLength={shouldLimit ? MAX_LENGTH : null}
+              style={[{ flex: 1, paddingBottom: 48}, styles.textLarge,]}
               onChangeText={text => setVal(text)}
               value={val}
             />
             <TouchableOpacity 
               onPress={() => setVal('')}
-              style={{marginLeft: 'auto'}}>
-              <MaterialIcons name="cancel" size={18} color="grey" />
+              style={{marginLeft: 'auto', alignSelf: 'flex-start'}}>
+              <MaterialIcons name="cancel" size={22} color="grey" />
             </TouchableOpacity>
           </View>
-          <Text style={[styles.textSmall, {color: 'grey'}]}>{len}/{MAX_LENGTH}</Text>
+          {
+            shouldLimit 
+            ? (
+              <Text style={[styles.textSmall, {color: 'grey'}]}>{len}/{MAX_LENGTH}</Text>
+            ) : null
+          }
         </View>
-      </View>
+      </KeyboardAvoidingView>
     )
   }
 

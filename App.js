@@ -45,7 +45,12 @@ const navigator = createSwitchNavigator({
       })
     },
     card: {
-      screen: CardScreen,
+      screen: createStackNavigator({
+        Card: CardScreen,
+        EditProperty: EditPropertyScreen
+      }, {
+        headerMode: null,
+      }),
       navigationOptions: ({ navigation }) => ({
         title: 'Prepare',
         tabBarIcon: ({ focused }) => {
@@ -59,9 +64,6 @@ const navigator = createSwitchNavigator({
         EditProperty: EditPropertyScreen
       }, {
         headerMode: 'none',
-        navigationOptions: {
-          gestureDirection: 'horizontal'
-        }
       }),
       navigationOptions: ({ navigation }) => ({
         header: null,

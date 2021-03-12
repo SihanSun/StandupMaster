@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { View, Text, SafeAreaView, TouchableOpacity, Image, ScrollView, FlatList, RefreshControl } from 'react-native';
+import { View, Text, SafeAreaView, TouchableOpacity, Image, ScrollView, FlatList, Modal } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; 
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 
-import RowTemplate from '../components/RowTemplate'
+import RowTemplate from '../components/RowTemplate';
+import Summaries from '../components/Summaries';
 import styles from '../styles';
 
 const TEAM_INDEX= 0;
@@ -19,7 +20,9 @@ class HomeScreen extends Component {
       isRefreshing: false,
       selectedIndex: TEAM_INDEX,
       teamMembers: [],
-      pastRecords: []
+      pastRecords: [],
+      modalVisible: false,
+      selectedSummaries: []
     };
   }
 
@@ -80,20 +83,153 @@ class HomeScreen extends Component {
     this.setState({ teamMembers });
   }
 
+  fetchSummaryForUser = async (email) => {
+    const currentSummary =  {
+      email: 'sihan.sun@yale.edu',
+      isBlocked: false,
+      prevWork: 'this is the prev work',
+      block: 'N/A',
+      planToday: 'Finish the modal. To test this functionality, I wrote this SUPER long text to check how the card will be resized',
+      name: 'Sihan Sun',
+      pictureUrl: null
+    };
+    return currentSummary;
+  }
+
   fetchPastRecords = () => {
     const pastRecords = [
       {
-        timestamp: 1614306931
+        timestamp: 1614306931,
+        summaries: [
+          {
+            isBlocked: false,
+            prevWork: 'this is the prev work',
+            block: 'N/A',
+            planToday: 'Finish the modal',
+            name: 'Sihan Sun',
+            email: 'sihan.sun@yale.edu',
+            pictureUrl: null
+          },
+          {
+            email: 'jiaqi.yang@yale.edu',
+            isBlocked: false,
+            prevWork: 'this is the prev work',
+            block: 'N/A',
+            planToday: 'Database Schema',
+            name: 'Jasky Yang',
+            pictureUrl: null
+          }
+        ]
       },{
-        timestamp: 1614268030
+        timestamp: 1614268030,
+        summaries: [
+          {
+            email: 'sihan.sun@yale.edu',
+            isBlocked: false,
+            prevWork: 'this is the prev work',
+            block: 'N/A',
+            planToday: 'Finish the modal. To test this functionality, I wrote this SUPER long text to check how the card will be resized',
+            name: 'Sihan Sun',
+            pictureUrl: null
+          },
+          {
+            email: 'jiaqi.yang@yale.edu',
+            isBlocked: false,
+            prevWork: 'this is the prev work',
+            block: 'N/A',
+            planToday: 'Database Schema',
+            name: 'Jasky Yang',
+            pictureUrl: null
+          }
+        ]
       },{
-        timestamp: 1614106931
+        timestamp: 1614106931,
+        summaries: [
+          {
+            email: 'sihan.sun@yale.edu',
+            isBlocked: false,
+            prevWork: 'this is the prev work',
+            block: 'N/A',
+            planToday: 'Finish the modal',
+            name: 'Sihan Sun',
+            pictureUrl: null
+          },
+          {
+            email: 'jiaqi.yang@yale.edu',
+            isBlocked: false,
+            prevWork: 'this is the prev work',
+            block: 'N/A',
+            planToday: 'Database Schema',
+            name: 'Jasky Yang',
+            pictureUrl: null
+          }
+        ]
       },{
-        timestamp: 1614006931
+        timestamp: 1614006931,
+        summaries: [
+          {
+            email: 'sihan.sun@yale.edu',
+            isBlocked: false,
+            prevWork: 'this is the prev work',
+            block: 'N/A',
+            planToday: 'Finish the modal',
+            name: 'Sihan Sun',
+            pictureUrl: null
+          },
+          {
+            email: 'jiaqi.yang@yale.edu',
+            isBlocked: false,
+            prevWork: 'this is the prev work',
+            block: 'N/A',
+            planToday: 'Database Schema',
+            name: 'Jasky Yang',
+            pictureUrl: null
+          }
+        ]
       },{
-        timestamp: 1613906931
+        timestamp: 1613906931,
+        summaries: [
+          {
+            email: 'sihan.sun@yale.edu',
+            isBlocked: false,
+            prevWork: 'this is the prev work',
+            block: 'N/A',
+            planToday: 'Finish the modal',
+            name: 'Sihan Sun',
+            pictureUrl: null
+          },
+          {
+            email: 'jiaqi.yang@yale.edu',
+            isBlocked: false,
+            prevWork: 'this is the prev work',
+            block: 'N/A',
+            planToday: 'Database Schema',
+            name: 'Jasky Yang',
+            pictureUrl: null
+          }
+        ]
       },{
-        timestamp: 1613806931
+        timestamp: 1613806931,
+        summaries: [
+          {
+            email: 'sihan.sun@yale.edu',
+            isBlocked: false,
+            prevWork: 'this is the prev work',
+            block: 'N/A',
+            planToday: 'Finish the modal',
+            name: 'Sihan Sun',
+            pictureUrl: null
+          },
+          {
+            email: 'jiaqi.yang@yale.edu',
+            isBlocked: false,
+            prevWork: 'this is the prev work',
+            block: 'N/A',
+            planToday: 'Database Schema',
+            name: 'Jasky Yang',
+            pictureUrl: null
+          }
+        ]
       },
     ];
 
@@ -163,6 +299,10 @@ class HomeScreen extends Component {
     const status = isBlocked ? require('../../assets/delete.png') : require('../../assets/checkmark.png');
     return (
       <RowTemplate
+        onPress={async () => {
+          const summary = await this.fetchSummaryForUser(email);
+          this.setState({selectedSummaries: [summary], modalVisible: true})
+        }}
         image={imageUrl}
         title={name}
         description={email}
@@ -173,7 +313,7 @@ class HomeScreen extends Component {
   }
 
   renderPastRecords = ({ item }) => {
-    const { timestamp } = item;
+    const { timestamp, summaries } = item;
     const { day, time } = this.readTimestamp(timestamp);
 
     const documentIcon = require('../../assets/document.png');
@@ -181,7 +321,9 @@ class HomeScreen extends Component {
 
     return (
       <RowTemplate
-        onPress={() => {}}
+        onPress={() => {
+          this.setState({ selectedSummaries: summaries, modalVisible: true});
+        }}
         image={documentIcon}
         imageStyle={{borderRadius: 0, borderWidth: 0, width: 40, height: 40}}
         title={day}
@@ -235,22 +377,27 @@ class HomeScreen extends Component {
     )
   }
 
-  renderStickyHeader = () => {
-    return (
-      <>
-        {this.renderHeader()}
-        {this.renderTabBar()}
-      </>
-    )
-  }
-
   render() {
-    const { isRefreshing } = this.state;
+    const { isRefreshing, selectedSummaries, modalVisible } = this.state;
     return (
       <SafeAreaView style={styles.container}>
-          {this.renderHeader()}
-          {this.renderTabBar()}
-          {this.renderMainSection()}
+        {this.renderHeader()}
+        {this.renderTabBar()}
+        {this.renderMainSection()}
+        <Modal
+          animationType={"slide"}
+          visible={modalVisible}
+          onRequestClose={() => {
+            this.setState({ modalVisible: false });
+          }}
+        >
+          <Summaries
+            summaries={selectedSummaries}
+            onRequestClose={() => {
+              this.setState({ modalVisible: false, selectedSummaries: [] });
+            }}
+          />
+        </Modal>
       </SafeAreaView>
     )
   }

@@ -2,6 +2,7 @@ import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   container: {
+    backgroundColor: 'white',
     flex: 1,
   },
   largeImage: {
@@ -39,9 +40,13 @@ export default StyleSheet.create({
   textLarge: {
     fontSize: 20
   },
+  cardContainer: {
+    flex: 1, 
+    backgroundColor: '#fafafa', 
+    padding: 5
+  },
   cardStyle: {
-    marginHorizontal: 20,
-    marginTop: 20,
+    margin: 5,
     padding: 10,
     backgroundColor: 'white',
     borderColor: '#f2f0eb',
@@ -61,5 +66,15 @@ export default StyleSheet.create({
     height: 80, 
     alignItems: 'center', 
     paddingHorizontal: 20
+  },
+  modalHeader: {
+    alignItems: 'center', 
+    padding: 10,
+    paddingHorizontal: 10, 
+    width: '100%',
+    backgroundColor: '#599DFF', 
+    borderTopLeftRadius: 20, 
+    borderTopRightRadius: 20, 
+    borderBottomColor: '#f2f0eb'
   }
 })

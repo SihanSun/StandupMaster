@@ -83,8 +83,8 @@ class ProfileScreen extends Component {
         />
         <TouchableOpacity 
           onPress={this.changePicture}
-          style={{marginVertical: 20, backgroundColor: '#599DFF', padding: 10, borderRadius: 10}}>
-          <Text style={[{color: 'white'}, styles.textRegular]}>Change Photo</Text>
+          style={{ marginVertical: 20 }}>
+          <Text style={[{color: '#599DFF'}, styles.textRegular]}>Change Photo</Text>
         </TouchableOpacity>
       </View>
     )

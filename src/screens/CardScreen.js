@@ -1,9 +1,14 @@
 import React, { Component } from 'react';
-import { View, Text, SafeAreaView, Image, ScrollView, Button } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { View, Text, SafeAreaView, Image, FlatList, Button, TouchableOpacity, AsyncStorage, Alert } from 'react-native';
 
 import EditCard from '../components/EditCard';
+import SingleEntryCard from '../components/SingleEntryCard';
 import styles from '../styles';
+
+const PREV_WORK = "prevWork";
+const IS_BLOCKED = "isBlocked";
+const BLOCK = "block";
+const PLAN_TODAY = "planToday";
 
 class CardScreen extends Component {
   constructor(props) {
@@ -11,36 +16,53 @@ class CardScreen extends Component {
 
     this.state = {
       isRefreshing: false,
-      whatDidIDo: '',
-      anyBlocks: '',
-      planToday: '',
-      isBlocked: false
+      prevWork: '',
+      isBlocked: false,
+      block: '',
+      planToday: ''
     }
   }
 
   componentDidMount() {
-
+    this.fetchUserStatus();
   }
 
-  fetchUserCard = async () => {
-    const cards = [
-      {
-        title: 'What did I do?',
-        content: 'I finished the homescreen yesterday'
-      }, {
-        title: 'Any blocks?',
-        content: 'Setting up eslint cause error when building'
-      }, {
-        title: 'What is my plan today?',
-        content: 'Working on the card page'
+  fetchLocalContent = async (key) => {
+    try {
+      const val = await AsyncStorage.getItem(key);
+      return val;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  storeToLocal = async (key, val) => {
+    try {
+      await AsyncStorage.setItem(key, val);
+      switch (key) {
+        case PREV_WORK:
+          this.setState({ prevWork: val });
+          break;
+        case BLOCK:
+          this.setState({ block: val });
+          break;
+        case PLAN_TODAY:
+          this.setState({ planToday: val });
+          break;
       }
-    ];
+    } catch (error) {
+      Alert('Save failed! Please try again.');
+      console.log(error);
+    }
+  }
 
-    const whatDidIDo = cards[0].content;
-    const anyBlocks = cards[1].content;
-    const planToday = cards[2].content;
+  fetchUserStatus = async () => {
+    const prevWork = await this.fetchLocalContent(PREV_WORK);
+    const isBlocked = await this.fetchLocalContent(IS_BLOCKED);
+    const block = await this.fetchLocalContent(BLOCK);
+    const planToday = await this.fetchLocalContent(planToday);
 
-    this.setState({ whatDidIDo, anyBlocks, planToday });
+    this.setState({ prevWork, isBlocked, block, planToday });
   }
 
   renderHeader = () => {
@@ -88,37 +110,59 @@ class CardScreen extends Component {
     )
   }
 
-  renderBlockedCard = () => {
-    const { isBlocked } = this.state;
-    if (isBlocked) {
-      return (
-        <EditCard
-          title="Any blocks?"
-        />
-      ); 
-    } else {
-      return null;
+  renderCard = ({item}) => {
+    const { navigation } = this.props;
+    const property = {
+      name: item.key,
+      value: item.content
+    };
+    const limit = {
+      shouldLimit: false
     }
+    const onSave = ({name, value}) => {
+      this.storeToLocal(name, value);
+    }
+    return (
+      <SingleEntryCard
+        title={item.title}
+        content={item.content}
+        onPress={() => {navigation.navigate('EditProperty', { property, limit, onSave })}}
+      />
+    )
   }
 
   render() {
-    const {isBlocked} = this.state;
+    const { prevWork, isBlocked, block, planToday } = this.state;
+    const data = [
+      {
+        key: PREV_WORK,
+        title: 'What did I do?',
+        content: prevWork
+      }
+    ];
+    if (isBlocked) {
+      data.push({
+        key: BLOCK,
+        title: 'Any blocks?',
+        content: block
+      });
+    }
+    data.push({
+      key: PLAN_TODAY,
+      title: "What's my plan for today?",
+      content: planToday
+    });
     return (
       <SafeAreaView style={[styles.container]}>
         <View style={{borderBottomColor: '#f2f0eb', borderBottomWidth: 2}}>
           {this.renderHeader()}
         </View>
-        <ScrollView style={{backgroundColor: '#fafafa', flex: 1}}>
-          <EditCard
-            title="What did I do?"
-          />
-          {this.renderBlockedCard()}
-          <View style={{marginBottom: 20}}>
-            <EditCard
-              title="What's my plan for today?"
-            />
-          </View>
-        </ScrollView>
+        <FlatList
+          style={styles.cardContainer}
+          data={data}
+          renderItem={this.renderCard}
+          keyExtractor={(item) => item.key}
+        />
         <View style={{borderTopWidth: 2, borderTopColor: '#f2f0eb'}}>
           <TouchableOpacity
             style={{marginVertical: 20, marginHorizontal: 20, borderRadius: 10, 
