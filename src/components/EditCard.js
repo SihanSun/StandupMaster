@@ -8,6 +8,8 @@ const saveIcon = require('../../assets/save.png');
 
 const EDITING_MODE = 0;
 const VIEWING_MODE = 1;
+const EDIT = "Edit";
+const SAVE = "Save";
 
 class EditCard extends Component {
   constructor(props) {
@@ -60,7 +62,7 @@ class EditCard extends Component {
         style={styles.cardStyle}
       >
         <View style={{padding: 10, borderBottomColor: '#f2f0eb', borderBottomWidth: 2, flexDirection: 'row', alignItems: 'center'}}>
-          <Text style={{fontSize: 20, fontWeight: 'bold'}}>{title}</Text>
+          <Text style={[{fontWeight: 'bold'}, styles.textLarge]}>{title}</Text>
           <TouchableOpacity 
             onPress={() => {
               if (mode === EDITING_MODE) {
@@ -70,10 +72,8 @@ class EditCard extends Component {
               this.setState({mode: m});
             }}
             style={{marginLeft: 'auto'}}>
-            <Image
-              style={{height: 30, width: 30}}
-              source={mode === EDITING_MODE ? saveIcon : editIcon}
-            />
+              <Text style={[{color: '#599DFF', fontWeight: 'bold'}, styles.textRegular]}
+              >{mode === EDITING_MODE ? SAVE : EDIT}</Text>
           </TouchableOpacity>
         </View>
         <View style={{padding: 10, height: 100}}>

@@ -2,7 +2,7 @@ import React from 'react';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import { createStackNavigator } from 'react-navigation-stack';
-import { MaterialIcons, Ionicons, MaterialCommunityIcons} from '@expo/vector-icons'; 
+import { MaterialIcons, Ionicons, MaterialCommunityIcons, FontAwesome } from '@expo/vector-icons'; 
 
 // screen
 import ResolveAuthScreen from './src/screens/ResolveAuthScreen';
@@ -11,7 +11,8 @@ import SignupScreen from './src/screens/SignupScreen';
 import JoinTeamScreen from './src/screens/JoinTeamScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import CardScreen from './src/screens/CardScreen';
-import SettingsScreen from './src/screens/SettingsScreen';
+import ProfileScreen from './src/screens/ProfileScreen';
+import EditPropertyScreen from './src/screens/EditPropertyScreen';
 
 // context provider
 import { UserProvider } from './src/context/UserContext';
@@ -47,12 +48,21 @@ const navigator = createSwitchNavigator({
         }
       })
     },
-    settings: {
-      screen: SettingsScreen,
+    profile: {
+      screen: createStackNavigator({
+        Profile: ProfileScreen,
+        EditProperty: EditPropertyScreen
+      }, {
+        headerMode: 'none',
+        navigationOptions: {
+          gestureDirection: 'horizontal'
+        }
+      }),
       navigationOptions: ({ navigation }) => ({
-        title: 'Settings',
+        header: null,
+        title: 'Profile',
         tabBarIcon: ({ focused }) => {
-          return <Ionicons name="settings" size={30} color={focused? '#599DFF': "black"} />
+          return <FontAwesome name="user" size={30} color={focused? '#599DFF': "black"} />;
         }
       })
     },

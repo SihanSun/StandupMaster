@@ -61,24 +61,24 @@ class CardScreen extends Component {
                 this.setState({isBlocked: false})
               }}
               style={{
-                backgroundColor: isBlocked ? null : '#599DFF',
-                padding:15, borderColor: 'black', 
+                backgroundColor: isBlocked ? '#f2f0eb' : '#599DFF',
+                padding:12, borderColor: '#f2f0eb', 
                 borderWidth: 1, borderTopLeftRadius: 10, 
                 borderBottomLeftRadius: 10, width: 100, alignItems: 'center'}}
             >
-              <Text style={{fontSize: 16, color: isBlocked ? 'black' : 'white'}}>OK</Text>
+              <Text style={[{color: isBlocked ? 'black' : 'white'}, styles.textRegular]}>OK</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
                 this.setState({isBlocked: true})
               }}
               style={{
-                backgroundColor: isBlocked ? '#599DFF' : null,
-                padding:15, borderColor: 'black', 
+                backgroundColor: isBlocked ? '#599DFF' : '#f2f0eb',
+                padding:12, borderColor: '#f2f0eb', 
                 borderWidth: 1, borderLeftWidth: 0, borderTopRightRadius: 10, 
                 borderBottomRightRadius: 10, width: 100, alignItems: 'center'}}
             >
-              <Text style={{fontSize: 16, color: isBlocked ? 'white' : 'black'}}>Blocked</Text>
+              <Text style={[{color: isBlocked ? 'white' : 'black'}, styles.textRegular]}>Blocked</Text>
             </TouchableOpacity>
   
           </View>
@@ -105,23 +105,27 @@ class CardScreen extends Component {
     const {isBlocked} = this.state;
     return (
       <SafeAreaView style={[styles.container]}>
-        <View style={{borderBottomColor: '#599DFF', borderBottomWidth: 2}}>
+        <View style={{borderBottomColor: '#f2f0eb', borderBottomWidth: 2}}>
           {this.renderHeader()}
         </View>
-        <ScrollView style={{backgroundColor: '#fafafa'}}>
+        <ScrollView style={{backgroundColor: '#fafafa', flex: 1}}>
           <EditCard
             title="What did I do?"
           />
           {this.renderBlockedCard()}
-          <EditCard
-            title="What's my plan for today?"
-          />
-          <TouchableOpacity
-            style={{marginVertical: 20, marginHorizontal: 20, borderRadius: 10, padding: 10, alignItems: 'center', backgroundColor: '#599DFF'}}
-          >
-            <Text style={{fontSize: 20, color: 'white'}}>Sync</Text>
-          </TouchableOpacity>
+          <View style={{marginBottom: 20}}>
+            <EditCard
+              title="What's my plan for today?"
+            />
+          </View>
         </ScrollView>
+        <View style={{borderTopWidth: 2, borderTopColor: '#f2f0eb'}}>
+          <TouchableOpacity
+            style={{marginVertical: 20, marginHorizontal: 20, borderRadius: 10, 
+            padding: 10, alignItems: 'center', backgroundColor: '#599DFF'}}>
+            <Text style={{fontSize: 20, color: 'white'}}>Upload</Text>
+          </TouchableOpacity>
+        </View>
       </SafeAreaView>
     )
   }

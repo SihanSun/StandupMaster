@@ -8,6 +8,8 @@ import styles from '../styles';
 
 const TEAM_INDEX= 0;
 const RECORD_INDEX = 1;
+const JOIN_ICON = require('../../assets/up-arrow.png');
+const TEAM_ICON = require('../../assets/meeting.jpg');
 
 class HomeScreen extends Component {
   constructor(props) {
@@ -104,19 +106,24 @@ class HomeScreen extends Component {
         <View style={{flexDirection: 'row', marginBottom: 10}}>
           <Image
             style={styles.largeImage}
-            source={require('../../assets/meeting.jpg')}
+            source={TEAM_ICON}
           />
-          <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
-            <Text style={{fontSize: 20, fontWeight: 'bold'}}>6</Text>
-            <Text style={{fontSize: 16}}>Members</Text>
-          </View>
-          <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
-            <Text style={{fontSize: 20, fontWeight: 'bold'}}>4</Text>
-            <Text style={{fontSize: 16}}>OK</Text>
-          </View>
-          <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
-            <Text style={{fontSize: 20, fontWeight: 'bold'}}>2</Text>
-            <Text style={{fontSize: 16}}>Blocked</Text>
+          <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <Text style={[styles.textLarge]}>Standup Master Team</Text>
+            <View style={{flexDirection: 'row', marginTop: 5}}>
+              <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
+                <Text style={{fontSize: 20, fontWeight: 'bold'}}>6</Text>
+                <Text style={{fontSize: 16}}>Members</Text>
+              </View>
+              <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
+                <Text style={{fontSize: 20, fontWeight: 'bold'}}>4</Text>
+                <Text style={{fontSize: 16}}>OK</Text>
+              </View>
+              <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
+                <Text style={{fontSize: 20, fontWeight: 'bold'}}>2</Text>
+                <Text style={{fontSize: 16}}>Blocked</Text>
+              </View>
+            </View>
           </View>
         </View>
         <View style={{flexDirection: 'row', marginTop: 10}}>
@@ -127,7 +134,7 @@ class HomeScreen extends Component {
             <TouchableOpacity>
               <Image
                 style={styles.mediumImage}
-                source={require('../../assets/up-arrow.png')}
+                source={JOIN_ICON}
               />
             </TouchableOpacity>
             <Text>Join</Text>
@@ -156,7 +163,6 @@ class HomeScreen extends Component {
     const status = isBlocked ? require('../../assets/delete.png') : require('../../assets/checkmark.png');
     return (
       <RowTemplate
-        bottomBorder={true}
         image={imageUrl}
         title={name}
         description={email}
@@ -176,7 +182,6 @@ class HomeScreen extends Component {
     return (
       <RowTemplate
         onPress={() => {}}
-        bottomBorder={true}
         image={documentIcon}
         imageStyle={{borderRadius: 0, borderWidth: 0, width: 40, height: 40}}
         title={day}
@@ -184,11 +189,6 @@ class HomeScreen extends Component {
         secondaryImage={viewIcon}
       />
     )
-
-  }
-
-  renderRecord = ({ item }) => {
-
   }
 
   renderMainSection = () => {
@@ -201,7 +201,7 @@ class HomeScreen extends Component {
         <FlatList
           data={data}
           renderItem={renderFunc}
-          keyExtractor={item => item.email}
+          keyExtractor={item => selectedIndex === TEAM_INDEX ? item.email : item.timestamp.toString()}
         />
       </View>
     )

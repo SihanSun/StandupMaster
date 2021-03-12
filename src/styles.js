@@ -30,6 +30,15 @@ export default StyleSheet.create({
     borderRadius: 10,
     resizeMode: 'cover'
   },
+  textSmall: {
+    fontSize: 10
+  },
+  textRegular: {
+    fontSize: 14
+  },
+  textLarge: {
+    fontSize: 20
+  },
   cardStyle: {
     marginHorizontal: 20,
     marginTop: 20,
@@ -43,5 +52,14 @@ export default StyleSheet.create({
     backgroundColor: '#fafafa',
     borderRadius: 12,
     padding: 10
+  },
+  rowContainer: {
+    backgroundColor: 'white',
+    borderBottomWidth: 2, 
+    borderColor: '#f2f0eb',
+    flexDirection: 'row', 
+    height: 80, 
+    alignItems: 'center', 
+    paddingHorizontal: 20
   }
 })
