@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useContext} from 'react';
 import { View, Text, SafeAreaView, TouchableOpacity, Image, ScrollView, FlatList, Modal } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; 
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
@@ -6,6 +6,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import RowTemplate from '../components/RowTemplate';
 import Summaries from '../components/Summaries';
 import styles from '../styles';
+import { Context as UserContext } from '../context/UserContext'; 
 
 const TEAM_INDEX= 0;
 const RECORD_INDEX = 1;
@@ -13,11 +14,15 @@ const JOIN_ICON = require('../../assets/up-arrow.png');
 const TEAM_ICON = require('../../assets/meeting.jpg');
 
 class HomeScreen extends Component {
+
+  static contextType = UserContext;
+
   constructor(props) {
     super(props);
 
     this.state = {
       isRefreshing: false,
+      cognitoUser: null,
       selectedIndex: TEAM_INDEX,
       teamMembers: [],
       pastRecords: [],
@@ -27,7 +32,10 @@ class HomeScreen extends Component {
   }
 
   componentDidMount() {
-    //TODO
+    const { state: { cognitoUser } } = this.context;
+    this.setState({ cognitoUser }) ;
+    console.log("in home!");
+    console.log(cognitoUser);
     this.fetchTeamMembers();
     this.fetchPastRecords();
   }

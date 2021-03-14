@@ -1,30 +1,25 @@
 import React from 'react';
+import createDataContext from './createDataContext';
 
 const UserContext = React.createContext();
 
 const userReducer = (state, action) => {
   switch (action.type) {
-    case 'change_name':
-      return { state, name: action.payload };
-    case 'change_status':
-      return { state, status: action.payload };
+    case 'set_cognito_user':
+      return { ...state, cognitoUser: action.payload };
+    default:
+      return state;
   }
 }
 
-const changeUserName = dispatch => {
-  return (name) => {
-    dispatch({ type: 'change_name', payload: name });
+const setCognitoUser = dispatch => {
+  return (cognitoUser) => {
+    dispatch({ type: 'set_cognito_user', payload: cognitoUser });
   }
 }
 
-const changeUserStatus = dispatch => {
-  return (status) => {
-    dispatch({ type: 'change_status', payload: status });
-  }
-}
-
-export const UserProvider = ({ children }) => {
-  return <UserContext.Provider>
-    {children}
-  </UserContext.Provider>
-}
+export const { Provider, Context } = createDataContext(
+  userReducer,
+  { setCognitoUser },
+  { cognitoUser: null }
+);

@@ -15,7 +15,7 @@ import ProfileScreen from './src/screens/ProfileScreen';
 import EditPropertyScreen from './src/screens/EditPropertyScreen';
 
 // context provider
-import { UserProvider } from './src/context/UserContext';
+import { Provider as UserProvider } from './src/context/UserContext';
 
 // utilities
 import { setNavigator } from './src/navigationRef';

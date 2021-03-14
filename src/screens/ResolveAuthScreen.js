@@ -5,6 +5,8 @@ import Amplify, { Auth, Hub } from 'aws-amplify';
 import { withAuthenticator, withOAuth } from 'aws-amplify-react-native'
 import * as WebBrowser from 'expo-web-browser';
 
+import { Context as UserContext } from '../context/UserContext';
+
 
 Amplify.configure({
     Auth: {
@@ -109,28 +111,28 @@ Amplify.configure({
 // 	},
 // ];
 
-class ResolveAuthScreen extends Component {
-  constructor(props) {
-    super(props);
+// class ResolveAuthScreen extends Component {
+//   constructor(props) {
+//     super(props);
 
-    this.state = {
-      user: null, 
-    };
-  }
+//     this.state = {
+//       user: null, 
+//     };
+//   }
   
-  componentDidMount() {
-    this._bootstrapAsync();
-  }
+//   componentDidMount() {
+//     this._bootstrapAsync();
+//   }
 
-  _bootstrapAsync = async () => {
-    const userToken = await AsyncStorage.getAllKeys();
-    console.log(userToken);
-    // this.props.navigation.navigate(userToken ? 'App' : 'Auth');
-  }
+//   _bootstrapAsync = async () => {
+//     const userToken = await AsyncStorage.getAllKeys();
+//     console.log(userToken);
+//     // this.props.navigation.navigate(userToken ? 'App' : 'Auth');
+//   }
 
-  render() {
-  }
-}
+//   render() {
+//   }
+// }
 
 
 
@@ -142,7 +144,19 @@ const doAuth = (props) => {
     oAuthError,
     hostedUISignIn,
     signOut,
+    navigation
   } = props;
+
+  const {
+    setCognitoUser
+  } = useContext(UserContext);
+
+  useEffect(() => {
+    if (oAuthUser) {
+      setCognitoUser(oAuthUser);
+      navigation.navigate('home');
+    }
+  }, [oAuthUser]);
 
   return (
   <SafeAreaView>
