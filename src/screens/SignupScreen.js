@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { View, Text, StyleSheet, SafeAreaView} from 'react-native';
 
+
 const SignupScreen = () => {
   return (
     <SafeAreaView>
