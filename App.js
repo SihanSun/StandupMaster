@@ -75,7 +75,7 @@ const navigator = createSwitchNavigator({
     },
   })
 }, {
-  initialRouteName: 'mainFlow'
+  initialRouteName: 'resolveAuth'
 })
 
 const App = createAppContainer(navigator);
