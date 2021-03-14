@@ -191,7 +191,9 @@ class CardScreen extends Component {
             style={{marginVertical: 20, marginHorizontal: 20, borderRadius: 10, 
             padding: 10, alignItems: 'center', 
             backgroundColor: disableUpload ?  '#f2f0eb' : '#599DFF'}}>
-            <Text style={{fontSize: 20, color: 'white'}}>Upload</Text>
+            <Text style={{fontSize: 20, color: 'white'}}>
+              {disableUpload ? 'Uploaded' : 'Upload'}
+            </Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
