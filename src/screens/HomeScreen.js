@@ -34,8 +34,6 @@ class HomeScreen extends Component {
   componentDidMount() {
     const { state: { cognitoUser } } = this.context;
     this.setState({ cognitoUser }) ;
-    console.log("in home!");
-    console.log(cognitoUser);
     this.fetchTeamMembers();
     this.fetchPastRecords();
   }

@@ -146,11 +146,16 @@ class ProfileScreen extends Component {
           renderItem={this.renderProperty}
           keyExtractor={(item) => item.name}
         />
-        <View style={{borderTopWidth: 2, borderTopColor: '#f2f0eb'}}>
+        <View style={{borderTopWidth: 2, borderTopColor: '#f2f0eb', flexDirection: 'row'}}>
           <TouchableOpacity
             style={{marginVertical: 20, marginHorizontal: 20, borderRadius: 10, 
-            padding: 10, alignItems: 'center', backgroundColor: '#599DFF'}}>
+            padding: 10, alignItems: 'center', backgroundColor: '#599DFF', flex: 1}}>
             <Text style={{fontSize: 20, color: 'white'}}>Quit Team</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{marginVertical: 20, marginHorizontal: 20, borderRadius: 10, 
+            padding: 10, alignItems: 'center', backgroundColor: '#599DFF', flex: 1}}>
+            <Text style={{fontSize: 20, color: 'white'}}>Sign out</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
