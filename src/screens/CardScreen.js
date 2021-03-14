@@ -9,6 +9,10 @@ const PREV_WORK = "prevWork";
 const IS_BLOCKED = "isBlocked";
 const BLOCK = "block";
 const PLAN_TODAY = "planToday";
+const UPLOAD_STATUS = "uploadStatus";
+const UPLOADED = "uploaded";
+const NOT_UPLOADED = "not uploaded"
+
 
 class CardScreen extends Component {
   constructor(props) {
@@ -19,7 +23,8 @@ class CardScreen extends Component {
       prevWork: '',
       isBlocked: false,
       block: '',
-      planToday: ''
+      planToday: '',
+      uploadStatus: 'NOT UPLOADED'
     }
   }
 
@@ -60,9 +65,11 @@ class CardScreen extends Component {
     const prevWork = await this.fetchLocalContent(PREV_WORK);
     const isBlocked = await this.fetchLocalContent(IS_BLOCKED);
     const block = await this.fetchLocalContent(BLOCK);
-    const planToday = await this.fetchLocalContent(planToday);
+    const planToday = await this.fetchLocalContent(PLAN_TODAY);
+    const uploadStatus = await this.fetchLocalContent(UPLOAD_STATUS);
 
-    this.setState({ prevWork, isBlocked, block, planToday });
+    this.setState({ prevWork, isBlocked, block, planToday, 
+      uploadStatus : uploadStatus ? uploadStatus : NOT_UPLOADED});
   }
 
   renderHeader = () => {
@@ -110,6 +117,15 @@ class CardScreen extends Component {
     )
   }
 
+  onSave = ({name, value}) => {
+    const { uploadStatus } = this.state;
+    if (uploadStatus === UPLOADED) {
+      this.setState({uploadStatus: NOT_UPLOADED});
+      this.storeToLocal(UPLOAD_STATUS, NOT_UPLOADED);
+    }
+    this.storeToLocal(name, value);
+  } 
+
   renderCard = ({item}) => {
     const { navigation } = this.props;
     const property = {
@@ -119,20 +135,23 @@ class CardScreen extends Component {
     const limit = {
       shouldLimit: false
     }
-    const onSave = ({name, value}) => {
-      this.storeToLocal(name, value);
-    }
     return (
       <SingleEntryCard
         title={item.title}
         content={item.content}
-        onPress={() => {navigation.navigate('EditProperty', { property, limit, onSave })}}
+        onPress={() => {navigation.navigate('EditProperty', { property, limit, onSave: this.onSave })}}
       />
     )
   }
 
+  upload = () => {
+    // TODO
+    this.setState({ uploadStatus: UPLOADED });
+    this.storeToLocal(UPLOAD_STATUS, UPLOADED);
+  }
+
   render() {
-    const { prevWork, isBlocked, block, planToday } = this.state;
+    const { prevWork, isBlocked, block, planToday, uploadStatus } = this.state;
     const data = [
       {
         key: PREV_WORK,
@@ -152,6 +171,8 @@ class CardScreen extends Component {
       title: "What's my plan for today?",
       content: planToday
     });
+
+    const disableUpload = uploadStatus === UPLOADED ? true : false;
     return (
       <SafeAreaView style={[styles.container]}>
         <View style={{borderBottomColor: '#f2f0eb', borderBottomWidth: 2}}>
@@ -165,8 +186,11 @@ class CardScreen extends Component {
         />
         <View style={{borderTopWidth: 2, borderTopColor: '#f2f0eb'}}>
           <TouchableOpacity
+            onPress={this.upload}
+            disabled={disableUpload}
             style={{marginVertical: 20, marginHorizontal: 20, borderRadius: 10, 
-            padding: 10, alignItems: 'center', backgroundColor: '#599DFF'}}>
+            padding: 10, alignItems: 'center', 
+            backgroundColor: disableUpload ?  '#f2f0eb' : '#599DFF'}}>
             <Text style={{fontSize: 20, color: 'white'}}>Upload</Text>
           </TouchableOpacity>
         </View>
