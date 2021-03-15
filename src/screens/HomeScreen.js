@@ -1,7 +1,7 @@
 import React, { Component, useContext} from 'react';
 import { View, Text, SafeAreaView, TouchableOpacity, Image, ScrollView, FlatList, Modal } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; 
-import { MaterialCommunityIcons } from '@expo/vector-icons'; 
+import { MaterialCommunityIcons, Feather } from '@expo/vector-icons'; 
 
 import RowTemplate from '../components/RowTemplate';
 import Summaries from '../components/Summaries';
@@ -243,9 +243,12 @@ class HomeScreen extends Component {
   }
 
   renderHeader = () => {
+    const { navigation } = this.props;
     return (
       <View style={{marginHorizontal: 20, marginTop: 20, backgroundColor: 'white'}}>
-        <View style={{flexDirection: 'row', marginBottom: 10}}>
+        <TouchableOpacity 
+          onPress={() => navigation.navigate('TeamProfile')}
+          style={{flexDirection: 'row', marginBottom: 10}}>
           <Image
             style={styles.largeImage}
             source={TEAM_ICON}
@@ -267,7 +270,10 @@ class HomeScreen extends Component {
               </View>
             </View>
           </View>
-        </View>
+          <View style={{justifyContent: 'center'}}>
+            <Feather name="more-vertical" size={24} color="black" />
+          </View>
+        </TouchableOpacity>
         <View style={{flexDirection: 'row', marginTop: 10}}>
           <View style={[{flex: 3, height: 80}, styles.textBox]}>
             <Text>There is no new announcement today. Please arrive the meeting ontime</Text>

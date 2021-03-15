@@ -13,6 +13,7 @@ import HomeScreen from './src/screens/HomeScreen';
 import CardScreen from './src/screens/CardScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 import EditPropertyScreen from './src/screens/EditPropertyScreen';
+import TeamProfileScreen from './src/screens/TeamProfileScreen';
 
 // context provider
 import { Provider as UserProvider } from './src/context/UserContext';
@@ -36,7 +37,13 @@ const navigator = createSwitchNavigator({
   joinTeam: JoinTeamScreen,
   mainFlow: createBottomTabNavigator({
     home: {
-      screen: HomeScreen,
+      screen: createStackNavigator({
+        Home: HomeScreen,
+        TeamProfile: TeamProfileScreen,
+        EditTeamProperty: EditPropertyScreen
+      }, {
+        headerMode: null
+      }),
       navigationOptions: ({ navigation }) => ({
         title: 'Home',
         tabBarIcon: ({ focused }) => {
