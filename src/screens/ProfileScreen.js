@@ -5,6 +5,8 @@ import * as ImagePicker from 'expo-image-picker';
 import styles from '../styles';
 import PropertyTemplate from '../components/PropertyTemplate';
 
+import { Context as UserContext } from '../context/UserContext'; 
+
 const PROFILE_PICTURE_DEFAULT = require('../../assets/pokemon.png');
 const EMAIL = "Email";
 const DISPLAY_NAME = "Display Name";
@@ -12,6 +14,8 @@ const FIRST_NAME = "First Name";
 const LAST_NAME = "Last Name";
 
 class ProfileScreen extends Component {
+  static contextType = UserContext;
+
   constructor(props) {
     super(props);
 
@@ -119,7 +123,7 @@ class ProfileScreen extends Component {
   }
 
   render() {
-
+    const {signOut} = this.context;
     const { email, displayName, firstName, lastName } = this.state;
     const properties = [{
       name: EMAIL,
@@ -149,7 +153,7 @@ class ProfileScreen extends Component {
         <View style={{borderTopWidth: 2, borderTopColor: '#f2f0eb', flexDirection: 'row'}}>
           <TouchableOpacity
             style={{marginVertical: 20, marginHorizontal: 20, borderRadius: 10, 
-            padding: 10, alignItems: 'center', backgroundColor: '#599DFF', flex: 1}}>
+            padding: 10, alignItems: 'center', backgroundColor: '#599DFF', flex: 1}}  onPress={() => signOut()}>
             <Text style={{fontSize: 20, color: 'white'}}>Quit Team</Text>
           </TouchableOpacity>
           <TouchableOpacity

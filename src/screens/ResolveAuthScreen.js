@@ -7,7 +7,6 @@ import * as WebBrowser from 'expo-web-browser';
 
 import { Context as UserContext } from '../context/UserContext';
 
-
 Amplify.configure({
     Auth: {
 
@@ -164,7 +163,7 @@ const doAuth = (props) => {
     {oAuthUser ? (
         <Button title="Sign Out" onPress={() => signOut()} />
     ) : (
-        <Button title="Federated Sign In" onPress={() => hostedUISignIn()} />
+        <Button title="Sign In" onPress={() => hostedUISignIn()} />
     )}
     </SafeAreaView>);
 }

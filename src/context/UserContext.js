@@ -1,5 +1,7 @@
 import React from 'react';
 import createDataContext from './createDataContext';
+import { Auth } from 'aws-amplify';
+import { navigate } from '../navigationRef';
 
 const UserContext = React.createContext();
 
@@ -7,6 +9,8 @@ const userReducer = (state, action) => {
   switch (action.type) {
     case 'set_cognito_user':
       return { ...state, cognitoUser: action.payload };
+    case 'sign_out':
+      return { ...state, cognitoUser: null };
     default:
       return state;
   }
@@ -18,8 +22,15 @@ const setCognitoUser = dispatch => {
   }
 }
 
+const signOut = dispatch => {
+  return () => {
+    dispatch({ type: 'sign_out'});
+    Auth.signOut({ global: true }).then(navigate('resolveAuth'));
+  }
+}
+
 export const { Provider, Context } = createDataContext(
   userReducer,
-  { setCognitoUser },
+  { setCognitoUser ,signOut },
   { cognitoUser: null }
 );
