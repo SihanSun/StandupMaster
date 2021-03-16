@@ -123,7 +123,7 @@ class ProfileScreen extends Component {
   }
 
   render() {
-    const {signOut} = this.context;
+    const { signOut } = this.context;
     const { email, displayName, firstName, lastName } = this.state;
     const properties = [{
       name: EMAIL,
@@ -153,12 +153,12 @@ class ProfileScreen extends Component {
         <View style={{borderTopWidth: 2, borderTopColor: '#f2f0eb', flexDirection: 'row'}}>
           <TouchableOpacity
             style={{marginVertical: 20, marginHorizontal: 20, borderRadius: 10, 
-            padding: 10, alignItems: 'center', backgroundColor: '#599DFF', flex: 1}}  onPress={() => signOut()}>
+            padding: 10, alignItems: 'center', backgroundColor: '#599DFF', flex: 1}}>
             <Text style={{fontSize: 20, color: 'white'}}>Quit Team</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={{marginVertical: 20, marginHorizontal: 20, borderRadius: 10, 
-            padding: 10, alignItems: 'center', backgroundColor: '#599DFF', flex: 1}}>
+            padding: 10, alignItems: 'center', backgroundColor: '#599DFF', flex: 1}} onPress={() => signOut()}>
             <Text style={{fontSize: 20, color: 'white'}}>Sign out</Text>
           </TouchableOpacity>
         </View>

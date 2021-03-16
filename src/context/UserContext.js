@@ -24,13 +24,16 @@ const setCognitoUser = dispatch => {
 
 const signOut = dispatch => {
   return () => {
-    dispatch({ type: 'sign_out'});
-    Auth.signOut({ global: true }).then(navigate('resolveAuth'));
+    Auth.signOut({ global: true })
+      .then(() => {
+        dispatch({ type: 'sign_out'});
+        navigate('resolveAuth')
+      });
   }
 }
 
 export const { Provider, Context } = createDataContext(
   userReducer,
-  { setCognitoUser ,signOut },
+  { setCognitoUser, signOut },
   { cognitoUser: null }
 );
