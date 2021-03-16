@@ -393,23 +393,25 @@ class HomeScreen extends Component {
     const { isRefreshing, selectedSummaries, modalVisible } = this.state;
     return (
       <SafeAreaView style={styles.container}>
-        {this.renderHeader()}
-        {this.renderTabBar()}
-        {this.renderMainSection()}
-        <Modal
-          animationType={"slide"}
-          visible={modalVisible}
-          onRequestClose={() => {
-            this.setState({ modalVisible: false });
-          }}
-        >
-          <Summaries
-            summaries={selectedSummaries}
+        <View style={styles.mainUI}>
+          {this.renderHeader()}
+          {this.renderTabBar()}
+          {this.renderMainSection()}
+          <Modal
+            animationType={"slide"}
+            visible={modalVisible}
             onRequestClose={() => {
-              this.setState({ modalVisible: false, selectedSummaries: [] });
+              this.setState({ modalVisible: false });
             }}
-          />
-        </Modal>
+          >
+            <Summaries
+              summaries={selectedSummaries}
+              onRequestClose={() => {
+                this.setState({ modalVisible: false, selectedSummaries: [] });
+              }}
+            />
+          </Modal>
+        </View>
       </SafeAreaView>
     )
   }

@@ -22,7 +22,7 @@ const Summaries = ({ summaries, onRequestClose }) => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container]}>
       <TouchableOpacity 
         onPress={onRequestClose}
         style={styles.modalHeader}>

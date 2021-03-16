@@ -175,26 +175,28 @@ class CardScreen extends Component {
     const disableUpload = uploadStatus === UPLOADED ? true : false;
     return (
       <SafeAreaView style={[styles.container]}>
-        <View style={{borderBottomColor: '#f2f0eb', borderBottomWidth: 2}}>
-          {this.renderHeader()}
-        </View>
-        <FlatList
-          style={styles.cardContainer}
-          data={data}
-          renderItem={this.renderCard}
-          keyExtractor={(item) => item.key}
-        />
-        <View style={{borderTopWidth: 2, borderTopColor: '#f2f0eb'}}>
-          <TouchableOpacity
-            onPress={this.upload}
-            disabled={disableUpload}
-            style={{marginVertical: 20, marginHorizontal: 20, borderRadius: 10, 
-            padding: 10, alignItems: 'center', 
-            backgroundColor: disableUpload ?  '#f2f0eb' : '#599DFF'}}>
-            <Text style={{fontSize: 20, color: 'white'}}>
-              {disableUpload ? 'Uploaded' : 'Upload'}
-            </Text>
-          </TouchableOpacity>
+        <View style={styles.mainUI}>
+          <View style={{borderBottomColor: '#f2f0eb', borderBottomWidth: 2}}>
+            {this.renderHeader()}
+          </View>
+          <FlatList
+            style={styles.cardContainer}
+            data={data}
+            renderItem={this.renderCard}
+            keyExtractor={(item) => item.key}
+          />
+          <View style={{borderTopWidth: 2, borderTopColor: '#f2f0eb'}}>
+            <TouchableOpacity
+              onPress={this.upload}
+              disabled={disableUpload}
+              style={{marginVertical: 20, marginHorizontal: 20, borderRadius: 10, 
+              padding: 10, alignItems: 'center', 
+              backgroundColor: disableUpload ?  '#f2f0eb' : '#599DFF'}}>
+              <Text style={{fontSize: 20, color: 'white'}}>
+                {disableUpload ? 'Uploaded' : 'Upload'}
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </SafeAreaView>
     )

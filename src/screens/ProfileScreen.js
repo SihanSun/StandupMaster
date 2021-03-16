@@ -140,27 +140,29 @@ class ProfileScreen extends Component {
     }];
 
     return (
-      <SafeAreaView style={[styles.container, {backgroundColor: 'white'}]}>
-        <View style={{ borderBottomWidth: 2, borderBottomColor: '#f2f0eb',}}>
-          {this.renderHeader()}
-        </View>
-        <FlatList
-          style={{flex: 1, backgroundColor: '#fafafa', flex: 1}}
-          data={properties}
-          renderItem={this.renderProperty}
-          keyExtractor={(item) => item.name}
-        />
-        <View style={{borderTopWidth: 2, borderTopColor: '#f2f0eb', flexDirection: 'row'}}>
-          <TouchableOpacity
-            style={{marginVertical: 20, marginHorizontal: 20, borderRadius: 10, 
-            padding: 10, alignItems: 'center', backgroundColor: '#599DFF', flex: 1}}>
-            <Text style={{fontSize: 20, color: 'white'}}>Quit Team</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{marginVertical: 20, marginHorizontal: 20, borderRadius: 10, 
-            padding: 10, alignItems: 'center', backgroundColor: '#599DFF', flex: 1}} onPress={() => signOut()}>
-            <Text style={{fontSize: 20, color: 'white'}}>Sign out</Text>
-          </TouchableOpacity>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.mainUI}>
+          <View style={{ borderBottomWidth: 2, borderBottomColor: '#f2f0eb',}}>
+            {this.renderHeader()}
+          </View>
+          <FlatList
+            style={{flex: 1, backgroundColor: '#fafafa', flex: 1}}
+            data={properties}
+            renderItem={this.renderProperty}
+            keyExtractor={(item) => item.name}
+          />
+          <View style={{borderTopWidth: 2, borderTopColor: '#f2f0eb', flexDirection: 'row'}}>
+            <TouchableOpacity
+              style={{marginVertical: 20, marginHorizontal: 20, borderRadius: 10, 
+              padding: 10, alignItems: 'center', backgroundColor: '#599DFF', flex: 1}}>
+              <Text style={{fontSize: 20, color: 'white'}}>Quit Team</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{marginVertical: 20, marginHorizontal: 20, borderRadius: 10, 
+              padding: 10, alignItems: 'center', backgroundColor: '#599DFF', flex: 1}} onPress={() => signOut()}>
+              <Text style={{fontSize: 20, color: 'white'}}>Sign out</Text>
+           </TouchableOpacity>
+          </View>
         </View>
       </SafeAreaView>
     )

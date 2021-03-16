@@ -74,9 +74,11 @@ const EditPropertyScreen = ({ navigation, route}) => {
   }
 
   return (
-    <SafeAreaView style={[styles.container, {backgroundColor: 'white'}]}>
-      {renderNavigation()}
-      {renderEditingSection()}
+    <SafeAreaView style={styles.container}>
+      <View style={styles.mainUI}>
+        {renderNavigation()}
+        {renderEditingSection()}
+      </View>
     </SafeAreaView>
   )
 }

@@ -2,8 +2,12 @@ import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   container: {
-    backgroundColor: 'white',
+    backgroundColor: '#599DFF',
     flex: 1,
+  },
+  mainUI: {
+    backgroundColor: 'white',
+    flex: 1
   },
   largeImage: {
     width: 80,

@@ -128,17 +128,19 @@ class TeamProfileScreen extends Component {
     }];
 
     return (
-      <SafeAreaView style={[styles.container, {backgroundColor: 'white'}]}>
-        {this.renderNavigation()}
-        <View style={{ borderBottomWidth: 2, borderBottomColor: '#f2f0eb',}}>
-          {this.renderHeader()}
+      <SafeAreaView style={[styles.container]}>
+        <View style={styles.mainUI}>
+          {this.renderNavigation()}
+          <View style={{ borderBottomWidth: 2, borderBottomColor: '#f2f0eb',}}>
+            {this.renderHeader()}
+          </View>
+          <FlatList
+            style={{flex: 1, backgroundColor: '#fafafa', flex: 1}}
+            data={properties}
+            renderItem={this.renderProperty}
+            keyExtractor={(item) => item.name}
+          />
         </View>
-        <FlatList
-          style={{flex: 1, backgroundColor: '#fafafa', flex: 1}}
-          data={properties}
-          renderItem={this.renderProperty}
-          keyExtractor={(item) => item.name}
-        />
       </SafeAreaView>
     )
   }
