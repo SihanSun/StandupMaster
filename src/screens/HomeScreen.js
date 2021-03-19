@@ -12,7 +12,6 @@ import { Context as TeamContext } from '../context/TeamContext';
 const TEAM_INDEX= 0;
 const RECORD_INDEX = 1;
 const JOIN_ICON = require('../../assets/up-arrow.png');
-const TEAM_ICON = require('../../assets/meeting.jpg');
 
 class HomeScreen extends Component {
 
@@ -34,7 +33,6 @@ class HomeScreen extends Component {
 
   componentDidMount() {
     const { state: { cognitoUser } } = this.context;
-    console.log(cognitoUser);
     this.setState({ cognitoUser }) ;
     this.fetchTeamMembers();
     this.fetchPastRecords();
@@ -288,7 +286,9 @@ class HomeScreen extends Component {
           <View style={[{flex: 3, height: 80}, styles.textBox]}>
             <TeamContext.Consumer>
               {({ state: { announcement }}) => (
-                <Text>{announcement}</Text>
+                <ScrollView>
+                  <Text>{announcement}</Text>
+                </ScrollView>
               )}
             </TeamContext.Consumer>
           </View>

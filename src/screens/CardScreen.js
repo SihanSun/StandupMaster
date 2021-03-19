@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, SafeAreaView, Image, FlatList, Button, TouchableOpacity, AsyncStorage, Alert } from 'react-native';
 
-import EditCard from '../components/EditCard';
+import { Context as UserContext } from '../context/UserContext';
 import SingleEntryCard from '../components/SingleEntryCard';
 import styles from '../styles';
 
@@ -78,10 +78,14 @@ class CardScreen extends Component {
       <View style={{margin: 20, backgroundColor: 'white'}}>
         <View style={{flexDirection: 'row', marginBottom: 10}}>
           <View style={{alignItems: 'center'}}>
-            <Image
-              style={styles.largeImage}
-              source={require('../../assets/pokemon.png')}
-            />
+            <UserContext.Consumer>
+              {({ state: { pictureSrc } }) => (
+                <Image
+                  style={styles.largeImage}
+                  source={pictureSrc}
+                />
+              )}
+            </UserContext.Consumer>
             <Text style={{fontSize: 20, marginTop: 5}}>Sihan Sun</Text>
           </View>
           <View style={{alignItems: 'center', justifyContent: 'center', flex: 1, flexDirection: 'row'}}>

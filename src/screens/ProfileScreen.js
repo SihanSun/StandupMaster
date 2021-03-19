@@ -7,7 +7,6 @@ import PropertyTemplate from '../components/PropertyTemplate';
 
 import { Context as UserContext } from '../context/UserContext'; 
 
-const PROFILE_PICTURE_DEFAULT = require('../../assets/pokemon.png');
 const EMAIL = "Email";
 const DISPLAY_NAME = "Display Name";
 const FIRST_NAME = "First Name";
@@ -21,13 +20,6 @@ class ProfileScreen extends Component {
 
     this.state = {
       isRefreshing: false,
-      email: '',
-      profilePictureUrl: null,
-      profilePicture: null,
-      displayName: '',
-      firstName: '',
-      lastName: '',
-      blocked: false
     }
   }
 
@@ -55,11 +47,14 @@ class ProfileScreen extends Component {
     });
 
     if (!result.cancelled) {
-      this.setState({profilePictureUrl: result.uri});
+      const { setUserProfilePicture } = this.context;
+      setUserProfilePicture({ uri: result.uri});
     }
   }
 
   fetchUser = async () => {
+    const { setDisplayName, setFirstName, setLastName, 
+      setUserProfilePicture, setUserEmail } = this.context;
     const user = {
       email: 'sihan.sun@yale.edu',
       profilePictureUrl: null,
@@ -73,17 +68,20 @@ class ProfileScreen extends Component {
     const { email, profilePictureUrl, profilePicture, 
       displayName, firstName, lastName, blocked } = user;
 
-    this.setState({ email, profilePictureUrl, profilePicture, 
-      displayName, firstName, lastName, blocked});
+    setDisplayName(displayName);
+    setFirstName(firstName);
+    setLastName(lastName);
+    setUserEmail(email);
+    profilePictureUrl && setUserProfilePicture({ uri: profilePictureUrl });
   }
 
   renderHeader = () => {
-    const { profilePictureUrl } = this.state;
+    const { state: {pictureSrc} } = this.context;
     return (
       <View style={{marginHorizontal: 20, marginTop: 20, backgroundColor: 'white', alignItems: 'center'}}>
         <Image
           style={styles.largeImage}
-          source={profilePictureUrl ? {uri: profilePictureUrl} : PROFILE_PICTURE_DEFAULT}
+          source={pictureSrc}
         />
         <TouchableOpacity 
           onPress={this.changePicture}
@@ -94,49 +92,41 @@ class ProfileScreen extends Component {
     )
   }
 
-  onChangeProperty = ({name, value}) => {
-    switch (name) {
-      case EMAIL:
-        this.setState({email: value});
-        break;
-      case DISPLAY_NAME: 
-        this.setState({displayName: value});
-        break;
-      case FIRST_NAME:
-        this.setState({firstName: value});
-        break;
-      case LAST_NAME:
-        this.setState({lastName: value});
-    }
-  }
-
   renderProperty = ({ item }) => {
-    const { name, value } = item;
+    const { name, value, setValue } = item;
     const { navigation } = this.props;
+    const onSave = ({name, value}) => setValue(value);
     return (
       <PropertyTemplate
         name={name}
         value={value}
-        onPress={() => {navigation.navigate('EditProperty', { property: item, onSave: this.onChangeProperty})}}
+        onPress={() => {navigation.navigate('EditProperty', { property: item, onSave })}}
       />
     )
   }
 
   render() {
     const { signOut } = this.context;
-    const { email, displayName, firstName, lastName } = this.state;
+    const { state: {
+      email, displayName, firstName, lastName },  
+      setUserEmail, setDisplayName, setFirstName, setLastName
+    } = this.context;
     const properties = [{
       name: EMAIL,
-      value: email
+      value: email,
+      setValue: setUserEmail
     }, {
       name: DISPLAY_NAME,
-      value: displayName
+      value: displayName,
+      setValue: setDisplayName
     }, {
       name: FIRST_NAME,
-      value: firstName
+      value: firstName,
+      setValue: setFirstName
     }, {
       name: LAST_NAME,
-      value: lastName
+      value: lastName,
+      setValue: setLastName
     }];
 
     return (
