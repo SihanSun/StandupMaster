@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { View, Text, SafeAreaView, Image, TouchableOpacity, FlatList, Platform } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { AntDesign } from '@expo/vector-icons';
+import { Context as TeamContext } from '../context/TeamContext';
+import { Context as UserContext } from '../context/UserContext';
 
 import styles from '../styles';
 import PropertyTemplate from '../components/PropertyTemplate';
@@ -12,15 +14,14 @@ const ANNOUNCEMENT = "Announcement";
 const INVITATION_CODE = "Invitation Code";
 
 class TeamProfileScreen extends Component {
+
+  static contextType = TeamContext;
+
   constructor(props) {
     super(props);
 
     this.state = {
       isRefreshing: false,
-      teamName: 'Standup Master Team',
-      teamPictureUri: null,
-      announcement: '',
-      invitationCode: 5238
     }
   }
 
@@ -48,7 +49,8 @@ class TeamProfileScreen extends Component {
     });
 
     if (!result.cancelled) {
-      this.setState({teamPictureUri: result.uri});
+      const { setTeamProfilePicture } = this.context;
+      setTeamProfilePicture({ uri: result.uri });
     }
   }
 
@@ -70,12 +72,12 @@ class TeamProfileScreen extends Component {
   }
 
   renderHeader = () => {
-    const { teamPictureUri } = this.state;
+    const { state: { pictureSrc } } = this.context;
     return (
       <View style={{marginHorizontal: 20, marginTop: 20, backgroundColor: 'white', alignItems: 'center'}}>
         <Image
           style={styles.largeImage}
-          source={teamPictureUri ? {uri: teamPictureUri} : TEAM_PICTURE_DEFAULT}
+          source={pictureSrc}
         />
         <TouchableOpacity 
           onPress={this.changePicture}
@@ -86,24 +88,15 @@ class TeamProfileScreen extends Component {
     )
   }
 
-  onChangeProperty = ({name, value}) => {
-    switch (name) {
-      case TEAM_NAME:
-        this.setState({teamName: value});
-        break;
-      case ANNOUNCEMENT: 
-        this.setState({announcement: value});
-        break;
-    }
-  }
-
   renderProperty = ({ item }) => {
-    const { name, value } = item;
+    const { name, value, setValue } = item;
     const { navigation } = this.props;
     const shouldLimit = item.name === TEAM_NAME
     const onPress = item.name === INVITATION_CODE
-      ? null
-      : () => { navigation.navigate('EditTeamProperty', { property: item, onSave: this.onChangeProperty, limit: { shouldLimit }}) };
+      ? null    
+      : () => { navigation.navigate('EditTeamProperty', 
+        { property: item, onSave: ({value}) => setValue(value), limit: { shouldLimit }}
+      )};
     return (
       <PropertyTemplate
         name={name}
@@ -114,17 +107,24 @@ class TeamProfileScreen extends Component {
   }
 
   render() {
+    const { state: {
+        name, announcement, invitationCode 
+      },
+      setTeamName, setTeamAnnouncement
+    } = this.context;
 
-    const { teamName, announcement, invitationCode } = this.state;
     const properties = [{
       name: TEAM_NAME,
-      value: teamName
+      value: name,
+      setValue: setTeamName
     }, {
       name: ANNOUNCEMENT,
-      value: announcement
+      value: announcement,
+      setValue: setTeamAnnouncement
     }, {
       name: INVITATION_CODE,
-      value: invitationCode
+      value: invitationCode,
+      setValue: null
     }];
 
     return (

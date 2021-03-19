@@ -7,6 +7,7 @@ import RowTemplate from '../components/RowTemplate';
 import Summaries from '../components/Summaries';
 import styles from '../styles';
 import { Context as UserContext } from '../context/UserContext'; 
+import { Context as TeamContext } from '../context/TeamContext';
 
 const TEAM_INDEX= 0;
 const RECORD_INDEX = 1;
@@ -33,6 +34,7 @@ class HomeScreen extends Component {
 
   componentDidMount() {
     const { state: { cognitoUser } } = this.context;
+    console.log(cognitoUser);
     this.setState({ cognitoUser }) ;
     this.fetchTeamMembers();
     this.fetchPastRecords();
@@ -249,12 +251,20 @@ class HomeScreen extends Component {
         <TouchableOpacity 
           onPress={() => navigation.navigate('TeamProfile')}
           style={{flexDirection: 'row', marginBottom: 10}}>
-          <Image
-            style={styles.largeImage}
-            source={TEAM_ICON}
-          />
+            <TeamContext.Consumer>
+              {({state: {pictureSrc}}) => (
+                <Image
+                  style={styles.largeImage}
+                  source={pictureSrc}
+                />
+              )}
+            </TeamContext.Consumer>
           <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-            <Text style={[styles.textLarge]}>Standup Master Team</Text>
+            <TeamContext.Consumer>
+              {({ state: { name }} ) => (
+                <Text style={[styles.textLarge]}>{name}</Text>
+              )}
+            </TeamContext.Consumer>
             <View style={{flexDirection: 'row', marginTop: 5}}>
               <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
                 <Text style={{fontSize: 20, fontWeight: 'bold'}}>6</Text>
@@ -276,7 +286,11 @@ class HomeScreen extends Component {
         </TouchableOpacity>
         <View style={{flexDirection: 'row', marginTop: 10}}>
           <View style={[{flex: 3, height: 80}, styles.textBox]}>
-            <Text>There is no new announcement today. Please arrive the meeting ontime</Text>
+            <TeamContext.Consumer>
+              {({ state: { announcement }}) => (
+                <Text>{announcement}</Text>
+              )}
+            </TeamContext.Consumer>
           </View>
           <View style={{flex: 1, alignItems: 'center'}}>
             <TouchableOpacity>
