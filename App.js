@@ -17,6 +17,7 @@ import TeamProfileScreen from './src/screens/TeamProfileScreen';
 
 // context provider
 import { Provider as UserProvider } from './src/context/UserContext';
+import { Provider as TeamProvider } from './src/context/TeamContext';
 
 // utilities
 import { setNavigator } from './src/navigationRef';
@@ -88,11 +89,15 @@ const navigator = createSwitchNavigator({
 const App = createAppContainer(navigator);
 
 export default () => {
-  return <UserProvider>
-    <App 
-      ref={navigator => {
-        setNavigator(navigator);
-      }}
-    />
-  </UserProvider>
+  return (
+    <UserProvider>
+      <TeamProvider>
+        <App 
+          ref={navigator => {
+          setNavigator(navigator);
+         }}
+        />
+      </TeamProvider>
+    </UserProvider>
+  )
 };

@@ -59,8 +59,8 @@ Amplify.configure({
         oauth: {
             domain: 'standup-master.auth.us-east-2.amazoncognito.com',
             scope: ['email', 'openid', 'aws.cognito.signin.user.admin', 'profile'],
-            redirectSignIn: 'exp://sf-ker.chaibot.standupmaster.exp.direct',
-            redirectSignOut: 'exp://sf-ker.chaibot.standupmaster.exp.direct',
+            redirectSignIn: 'exp://x6-uud.anonymous.standupmaster.exp.direct',
+            redirectSignOut: 'exp://x6-uud.anonymous.standupmaster.exp.direct',
             // redirectSignIn: 'StandupMaster://',
             // redirectSignOut: 'StandupMaster://',
             responseType: 'code', // or 'token', note that REFRESH token will only be generated when the responseType is code
