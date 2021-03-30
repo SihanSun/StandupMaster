@@ -6,6 +6,7 @@ import styles from '../styles';
 import PropertyTemplate from '../components/PropertyTemplate';
 import { Context as SharedContext } from '../context/SharedContext';
 import { getUsers } from '../api/users';
+import { removeTeamMember } from '../api/teams';
 
 const EMAIL = "Email";
 const DISPLAY_NAME = "Display Name";
@@ -103,6 +104,13 @@ class ProfileScreen extends Component {
     setUserLastName(jwtToken, userInfo, value);
   }
 
+  quitTeam = async () => {
+    const { state: { cognitoUser, userInfo }, setUserLastName } = this.context;
+    const jwtToken = cognitoUser.signInUserSession.idToken.jwtToken;
+    const { email, teamId } = userInfo;
+    removeTeamMember(jwtToken, teamId, email);
+  }
+
   render() {
     const { state: { userInfo }, signOut } = this.context;
     const {
@@ -140,6 +148,7 @@ class ProfileScreen extends Component {
           />
           <View style={{borderTopWidth: 2, borderTopColor: '#f2f0eb', flexDirection: 'row'}}>
             <TouchableOpacity
+              onPress={this.quitTeam}
               style={{marginVertical: 20, marginHorizontal: 20, borderRadius: 10, 
               padding: 10, alignItems: 'center', backgroundColor: '#599DFF', flex: 1}}>
               <Text style={{fontSize: 20, color: 'white'}}>Quit Team</Text>

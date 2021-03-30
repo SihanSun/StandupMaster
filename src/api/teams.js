@@ -34,4 +34,22 @@ export const putTeam = async (jwtToken, teamId, data) => {
   }
 }
 
+export const addTeamMember = async (jwtToken, teamId, email) => {
+  try {
+    const data = JSON.stringify({email});
+    await teamAPI(jwtToken).put(`/${teamId}/members`, data);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export const removeTeamMember = async (jwtToken, teamId, email) => {
+  try {
+    const data = JSON.stringify({email});
+    await teamAPI(jwtToken).delete(`/${teamId}/members`, data);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export default teamAPI;

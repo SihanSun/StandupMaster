@@ -35,6 +35,7 @@ class HomeScreen extends Component {
 
   componentDidMount() {
     this.fetchTeamInfo();
+    this.fetchPastRecords();
   }
 
   fetchTeamInfo = async () => {
@@ -54,8 +55,6 @@ class HomeScreen extends Component {
     for (let i = 0; i < members.length; i = i+1) {
       const { email, profilePictureUrl, displayName, firstName, lastName } = members[i];
       const { presentation, isBlocked } = await getStatus(jwtToken, email);
-      console.log('hi');
-      console.log(isBlocked);
       membersStatus.push({
         email,
         presentation,
