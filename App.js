@@ -54,9 +54,6 @@ const navigator = createSwitchNavigator({
       screen: createStackNavigator({
         Home: HomeScreen,
         TeamProfile: TeamProfileScreen,
-        // CreateOrJoin: CreateOrJoinScreen,
-        // JoinTeam: JoinTeamScreen,
-        // CreateTeam: CreateTeamScreen,
         EditTeamProperty: EditPropertyScreen 
         
       }, {
@@ -100,7 +97,7 @@ const navigator = createSwitchNavigator({
     },
   })
 }, {
-  initialRouteName: 'JoinCreateFlow'
+  initialRouteName: 'mainFlow'
 })
 
 const App = createAppContainer(navigator);
