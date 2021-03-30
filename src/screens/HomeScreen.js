@@ -1,5 +1,5 @@
 import React, { Component, useContext} from 'react';
-import { View, Text, SafeAreaView, TouchableOpacity, Image, ScrollView, FlatList, Modal } from 'react-native';
+import { View, Text, SafeAreaView, TouchableOpacity, Image, ScrollView, FlatList, Modal, RefreshControl } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; 
 import { MaterialCommunityIcons, Feather } from '@expo/vector-icons'; 
 
@@ -39,6 +39,7 @@ class HomeScreen extends Component {
   }
 
   fetchTeamInfo = async () => {
+    this.setState({isRefreshing: true});
     const { state: { cognitoUser, userInfo }, setTeamInfo } = this.context;
     const jwtToken = cognitoUser.signInUserSession.idToken.jwtToken;
     const teamId = userInfo.teamId;
@@ -65,14 +66,7 @@ class HomeScreen extends Component {
         lastName
       });
     }
-    this.setState({membersStatus});
-  }
-
-  onRefresh = () => {
-    this.setState({isRefreshing: true})
-    setTimeout(() => {
-      this.setState({isRefreshing: false})
-    }, 2000)
+    this.setState({membersStatus, isRefreshing: false});
   }
 
   fetchSummaryForUser = (email) => {
@@ -367,6 +361,7 @@ class HomeScreen extends Component {
     return (
       <View style={{flex: 1, backgroundColor: '#fafafa'}}>
         <FlatList
+          scrollEnabled={false}
           data={data}
           renderItem={renderFunc}
           keyExtractor={item => selectedIndex === TEAM_INDEX ? item.email : item.timestamp.toString()}
@@ -407,7 +402,12 @@ class HomeScreen extends Component {
     const { isRefreshing, selectedSummaries, modalVisible } = this.state;
     return (
       <SafeAreaView style={styles.container}>
-        <View style={styles.mainUI}>
+        <ScrollView style={styles.mainUI}
+          refreshControl={
+            <RefreshControl
+              refreshing={isRefreshing}
+              onRefresh={this.fetchTeamInfo}
+            />}>
           {this.renderHeader()}
           {this.renderTabBar()}
           {this.renderMainSection()}
@@ -425,7 +425,7 @@ class HomeScreen extends Component {
               }}
             />
           </Modal>
-        </View>
+        </ScrollView>
       </SafeAreaView>
     )
   }
