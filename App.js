@@ -14,6 +14,7 @@ import CardScreen from './src/screens/CardScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 import EditPropertyScreen from './src/screens/EditPropertyScreen';
 import TeamProfileScreen from './src/screens/TeamProfileScreen';
+import CreateTeamScreen from './src/screens/CreateTeamScreen'; 
 
 // context provider
 import { Provider as UserProvider } from './src/context/UserContext';
@@ -22,10 +23,22 @@ import { Provider as TeamProvider } from './src/context/TeamContext';
 // utilities
 import { setNavigator } from './src/navigationRef';
 import styles, { StyleSheet } from './src/styles';
+import CreateOrJoinScreen from './src/screens/CreateOrJoinScreen';
 
 // navigation
 const navigator = createSwitchNavigator({
   resolveAuth: ResolveAuthScreen,
+  JoinCreateFlow: createStackNavigator({
+    JoinOrCreate: CreateOrJoinScreen,
+    JoinTeam: JoinTeamScreen,
+    CreateTeam: CreateTeamScreen,
+    EditTeamProperty: EditPropertyScreen
+  }, {
+    headerMode: 'none',
+    navigationOptions: {
+      gestureDirection: 'horizontal'
+    }
+  }),
   loginFlow: createStackNavigator({
     Signin: SigninScreen,
     Signup: SignupScreen
@@ -41,7 +54,11 @@ const navigator = createSwitchNavigator({
       screen: createStackNavigator({
         Home: HomeScreen,
         TeamProfile: TeamProfileScreen,
-        EditTeamProperty: EditPropertyScreen
+        // CreateOrJoin: CreateOrJoinScreen,
+        // JoinTeam: JoinTeamScreen,
+        // CreateTeam: CreateTeamScreen,
+        EditTeamProperty: EditPropertyScreen 
+        
       }, {
         headerMode: null
       }),
@@ -83,7 +100,7 @@ const navigator = createSwitchNavigator({
     },
   })
 }, {
-  initialRouteName: 'resolveAuth'
+  initialRouteName: 'JoinCreateFlow'
 })
 
 const App = createAppContainer(navigator);

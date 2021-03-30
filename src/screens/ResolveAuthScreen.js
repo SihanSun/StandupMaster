@@ -153,7 +153,7 @@ const doAuth = (props) => {
   useEffect(() => {
     if (oAuthUser) {
       setCognitoUser(oAuthUser);
-      navigation.navigate('home');
+      navigation.navigate('home');//here 
     }
   }, [oAuthUser]);
 
