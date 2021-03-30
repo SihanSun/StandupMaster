@@ -24,7 +24,7 @@ export const getUsers = async (jwtToken, userEmail) => {
   } 
 }
 
-export const putUsers = async (jwtToken, data) => {
+export const putUsers = async (jwtToken, userEmail, data) => {
   try {
     await userAPI(jwtToken).put(`/${userEmail}`, data);
   } catch (error) {

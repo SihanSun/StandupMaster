@@ -4,6 +4,7 @@ import { Auth } from 'aws-amplify';
 import { navigate } from '../navigationRef';
 import { putTeam, getTeam } from '../api/teams';
 import { getStatus, putStatus } from '../api/userStatus';
+import { getUsers, putUsers } from '../api/users';
 
 const SharedContextReducer = (state, action) => {
   switch (action.type) {
@@ -39,6 +40,57 @@ const signOut = dispatch => {
 const setUserInfo = dispatch => {
   return (userInfo) => {
     userInfo && dispatch({ type: 'set_user_info', payload: userInfo });
+  }
+}
+
+const setUserDisplayName = dispatch => {
+  return async (jwtToken, userInfo, newName) => {
+    const { email, displayName, firstName, lastName } = userInfo;
+    const data = JSON.stringify({
+      email,
+      displayName: newName,
+      firstName,
+      lastName
+    });
+    await putUsers(jwtToken, email, data);
+    const newUserInfo = await getUsers(jwtToken, email);
+    console.log('new user info!');
+    console.log(newUserInfo);
+    newUserInfo && dispatch({ type: 'set_user_info', payload: newUserInfo });
+  }
+}
+
+const setUserFirstName = dispatch => {
+  return async (jwtToken, userInfo, newFirstName) => {
+    const { email, displayName, firstName, lastName } = userInfo;
+    const data = JSON.stringify({
+      email,
+      displayName,
+      firstName: newFirstName,
+      lastName
+    });
+    await putUsers(jwtToken, email, data);
+    const newUserInfo = await getUsers(jwtToken, email);
+    console.log('new user info!');
+    console.log(newUserInfo);
+    newUserInfo && dispatch({ type: 'set_user_info', payload: newUserInfo });
+  }
+}
+
+const setUserLastName = dispatch => {
+  return async (jwtToken, userInfo, newLastName) => {
+    const { email, displayName, firstName, lastName } = userInfo;
+    const data = JSON.stringify({
+      email,
+      displayName,
+      firstName,
+      lastName: newLastName
+    });
+    await putUsers(jwtToken, email, data);
+    const newUserInfo = await getUsers(jwtToken, email);
+    console.log('new user info!');
+    console.log(newUserInfo);
+    newUserInfo && dispatch({ type: 'set_user_info', payload: newUserInfo });
   }
 }
 
@@ -85,14 +137,12 @@ const setUserStatus = dispatch => {
 }
 
 const uploadUserStatus = dispatch => {
-  return async (jwtToken, userInfo) => {
+  return async (jwtToken, userInfo, callback) => {
     const { email, isBlocked, presentation } = userInfo;
     const data = JSON.stringify({
       isBlocked,
       presentation
     });
-    console.log("JSON dat!");
-    console.log(data);
     await putStatus(jwtToken, email, data);
     const userStatus = await getStatus(jwtToken, email);
     setUserStatus(userStatus);
@@ -103,7 +153,8 @@ export const { Provider, Context } = createDataContext(
   SharedContextReducer,
   { setCognitoUser, signOut, setUserInfo, setTeamInfo, setUserStatus, 
     setTeamName, setTeamAnnouncement,
-    uploadUserStatus
+    uploadUserStatus,
+    setUserDisplayName, setUserFirstName, setUserLastName
    },
   { cognitoUser: null, userInfo: null, teamInfo: null, userStatus: null }
 );

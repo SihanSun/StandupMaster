@@ -4,8 +4,8 @@ import * as ImagePicker from 'expo-image-picker';
 
 import styles from '../styles';
 import PropertyTemplate from '../components/PropertyTemplate';
-
-import { Context as UserContext } from '../context/UserContext'; 
+import { Context as SharedContext } from '../context/SharedContext';
+import { getUsers } from '../api/users';
 
 const EMAIL = "Email";
 const DISPLAY_NAME = "Display Name";
@@ -13,7 +13,7 @@ const FIRST_NAME = "First Name";
 const LAST_NAME = "Last Name";
 
 class ProfileScreen extends Component {
-  static contextType = UserContext;
+  static contextType = SharedContext;
 
   constructor(props) {
     super(props);
@@ -24,7 +24,6 @@ class ProfileScreen extends Component {
   }
 
   componentDidMount() {
-    this.fetchUser();
   }
 
   requestImagePermission = async () => {
@@ -52,29 +51,6 @@ class ProfileScreen extends Component {
     }
   }
 
-  fetchUser = async () => {
-    const { setDisplayName, setFirstName, setLastName, 
-      setUserProfilePicture, setUserEmail } = this.context;
-    const user = {
-      email: 'sihan.sun@yale.edu',
-      profilePictureUrl: null,
-      profilePicture: null,
-      displayName: 'Sihan Sun',
-      firstName: 'Sihan',
-      lastName: 'Sun',
-      blocked: false
-    }
-
-    const { email, profilePictureUrl, profilePicture, 
-      displayName, firstName, lastName, blocked } = user;
-
-    setDisplayName(displayName);
-    setFirstName(firstName);
-    setLastName(lastName);
-    setUserEmail(email);
-    profilePictureUrl && setUserProfilePicture({ uri: profilePictureUrl });
-  }
-
   renderHeader = () => {
     const { state: {pictureSrc} } = this.context;
     return (
@@ -95,38 +71,58 @@ class ProfileScreen extends Component {
   renderProperty = ({ item }) => {
     const { name, value, setValue } = item;
     const { navigation } = this.props;
-    const onSave = ({name, value}) => setValue(value);
+
+    const onPress = name === EMAIL
+      ? null
+      : () => {navigation.navigate('EditProperty', { property: item, onSave: (value) => setValue(value)})}
     return (
       <PropertyTemplate
         name={name}
         value={value}
-        onPress={() => {navigation.navigate('EditProperty', { property: item, onSave })}}
+        onPress={onPress}
       />
     )
   }
 
+  changeUserDisplayName = (value) => {
+    const { state: { cognitoUser, userInfo }, setUserDisplayName } = this.context;
+    const jwtToken = cognitoUser.signInUserSession.idToken.jwtToken;
+    setUserDisplayName(jwtToken, userInfo, value);
+  }
+
+  changeUserFirstName = (value) => {
+    const { state: { cognitoUser, userInfo }, setUserFirstName } = this.context;
+    const jwtToken = cognitoUser.signInUserSession.idToken.jwtToken;
+    setUserFirstName(jwtToken, userInfo, value);
+  }
+
+  changeUserLastName = (value) => {
+    const { state: { cognitoUser, userInfo }, setUserLastName } = this.context;
+    const jwtToken = cognitoUser.signInUserSession.idToken.jwtToken;
+    setUserLastName(jwtToken, userInfo, value);
+  }
+
   render() {
-    const { signOut } = this.context;
-    const { state: {
-      email, displayName, firstName, lastName },  
-      setUserEmail, setDisplayName, setFirstName, setLastName
-    } = this.context;
+    const { state: { userInfo }, signOut } = this.context;
+    const {
+      email, displayName, firstName, lastName
+    } = userInfo;
     const properties = [{
       name: EMAIL,
       value: email,
-      setValue: setUserEmail
+      setValue: null
     }, {
       name: DISPLAY_NAME,
       value: displayName,
-      setValue: setDisplayName
+      setValue: this.changeUserDisplayName
     }, {
       name: FIRST_NAME,
       value: firstName,
-      setValue: setFirstName
+      setValue: this.changeUserFirstName
     }, {
       name: LAST_NAME,
       value: lastName,
-      setValue: setLastName
+      setValue: this.changeUserLastName
     }];
 
     return (

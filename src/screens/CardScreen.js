@@ -30,6 +30,7 @@ class CardScreen extends Component {
       isBlocked: false,
       block: '',
       planToday: '',
+      uploaded: false
     }
   }
 
@@ -46,18 +47,18 @@ class CardScreen extends Component {
     }
   }
 
-  storeToLocal = async (key, val) => {
+  storeToLocal = async (key, val, callback) => {
     try {
       await AsyncStorage.setItem(key, val);
       switch (key) {
         case PREV_WORK:
-          this.setState({ prevWork: val });
+          this.setState({ prevWork: val }, () => {callback && callback});
           break;
         case BLOCK:
-          this.setState({ block: val });
+          this.setState({ block: val }, () => {callback && callback});
           break;
         case PLAN_TODAY:
-          this.setState({ planToday: val });
+          this.setState({ planToday: val }, () => {callback && callback});
           break;
       }
     } catch (error) {
@@ -88,6 +89,8 @@ class CardScreen extends Component {
 
     const userInfo = await getUsers(jwtToken, email);
     userInfo && setUserInfo(userInfo);
+
+    this.checkMatch();
   }
 
   renderHeader = () => {
@@ -139,13 +142,23 @@ class CardScreen extends Component {
     )
   }
 
-  onSave = ({name, value}) => {
-    const { uploadStatus } = this.state;
-    if (uploadStatus === UPLOADED) {
-      this.setState({uploadStatus: NOT_UPLOADED});
-      this.storeToLocal(UPLOAD_STATUS, NOT_UPLOADED);
-    }
+  checkMatch = () => {
+    const { prevWork, isBlocked, block, planToday } = this.state;
+
+    const { state: {userStatus} } = this.context;
+    let uploaded = false;
+    if (userStatus) {
+      const { presentation } = userStatus;
+      uploaded = prevWork === presentation.prevWork 
+        && block === presentation.blockedBy && planToday === presentation.planToday
+        && isBlocked === userStatus.isBlocked;
+    } 
+    this.setState({uploaded});
+  }
+
+  onSave = (name, value) => {
     this.storeToLocal(name, value);
+    this.setState({uploaded: false});
   } 
 
   renderCard = ({item}) => {
@@ -161,7 +174,7 @@ class CardScreen extends Component {
       <SingleEntryCard
         title={item.title}
         content={item.content}
-        onPress={() => {navigation.navigate('EditProperty', { property, limit, onSave: this.onSave })}}
+        onPress={() => {navigation.navigate('EditProperty', { property, limit, onSave: (val) => this.onSave(item.key, val) })}}
       />
     )
   }
@@ -181,22 +194,13 @@ class CardScreen extends Component {
         planToday
       }
     }
-    console.log(data);
     await uploadUserStatus(jwtToken, data);
+    this.setState({uploaded: true});
   }
 
   render() {
     const { prevWork, isBlocked, block, planToday } = this.state;
-
-    const { state: {userStatus} } = this.context;
-    let uploaded = false;
-    if (userStatus) {
-      const { presentation } = userStatus;
-      uploaded = prevWork === presentation.prevWork 
-        && block === presentation.blockBy && planToday === presentation.planToday
-        && isBlocked === userStatus.isBlocked;
-    }
-      
+    const { uploaded } = this.state;
     const data = [
       {
         key: PREV_WORK,
