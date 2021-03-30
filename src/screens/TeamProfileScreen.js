@@ -11,7 +11,7 @@ import PropertyTemplate from '../components/PropertyTemplate';
 const TEAM_PICTURE_DEFAULT = require('../../assets/pokemon.png');
 const TEAM_NAME = "Team Name";
 const ANNOUNCEMENT = "Announcement";
-const INVITE = "INVITE_MEMBER";
+const INVITE = "Invite Member";
 
 class TeamProfileScreen extends Component {
 
@@ -92,7 +92,7 @@ class TeamProfileScreen extends Component {
   renderProperty = ({ item }) => {
     const { name, value, setValue } = item;
     const { navigation } = this.props;
-    const shouldLimit = item.name === TEAM_NAME
+    const shouldLimit = item.name === TEAM_NAME || item.name === INVITE;
     const onPress = () => { navigation.navigate('EditTeamProperty', 
         { property: item, onSave: (value) => setValue(value), limit: { shouldLimit }}
       )};
@@ -135,7 +135,7 @@ class TeamProfileScreen extends Component {
       setValue: this.changeTeamAnnouncement
     }, {
       name: INVITE,
-      value: 'Invite By Email',
+      value: 'Enter email here',
       setValue: (value) => addTeamMember(value)
     }];
 
