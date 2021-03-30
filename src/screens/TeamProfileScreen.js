@@ -3,7 +3,7 @@ import { View, Text, SafeAreaView, Image, TouchableOpacity, FlatList, Platform }
 import * as ImagePicker from 'expo-image-picker';
 import { AntDesign } from '@expo/vector-icons';
 import { Context as SharedContext } from '../context/SharedContext';
-import { addTeamMember } from '../api/teams';
+import { addTeamMember, removeTeamMember } from '../api/teams';
 
 import styles from '../styles';
 import PropertyTemplate from '../components/PropertyTemplate';
@@ -12,6 +12,7 @@ const TEAM_PICTURE_DEFAULT = require('../../assets/pokemon.png');
 const TEAM_NAME = "Team Name";
 const ANNOUNCEMENT = "Announcement";
 const INVITE = "Invite Member";
+const REMOVE = "Remove Member";
 
 class TeamProfileScreen extends Component {
 
@@ -117,13 +118,12 @@ class TeamProfileScreen extends Component {
     setTeamAnnouncement(jwtToken, teamInfo, value);
   }
 
-  inviteMember = (value) => {
-    const { state: {teamInfo, cognitoUser }} = this.context;
-  }
-
   render() {
-    const { state: {teamInfo}, setTeamName } = this.context;
+    const { state: { teamInfo, cognitoUser, userInfo }, setTeamName } = this.context;
     const { id, name, announcement } = teamInfo;
+
+    const jwtToken = cognitoUser.signInUserSession.idToken.jwtToken;
+    const teamId = userInfo.teamId;
 
     const properties = [{
       name: TEAM_NAME,
@@ -136,7 +136,11 @@ class TeamProfileScreen extends Component {
     }, {
       name: INVITE,
       value: 'Enter email here',
-      setValue: (value) => addTeamMember(value)
+      setValue: (value) => addTeamMember(jwtToken, teamId, value)
+    }, {
+      name: REMOVE,
+      value: 'Enter email here',
+      setValue: (value) => removeTeamMember(jwtToken, teamId, value)
     }];
 
     return (
