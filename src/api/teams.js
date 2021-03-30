@@ -52,4 +52,14 @@ export const removeTeamMember = async (jwtToken, teamId, email) => {
   }
 }
 
+export const postPendingMemeber = async (jwtToken, teamId, data) => {
+  try {
+    console.log(teamId)
+    console.log(data)
+    await teamAPI(jwtToken).post(`/${teamId}/members`, data);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export default teamAPI;
