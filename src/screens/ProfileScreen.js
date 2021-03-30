@@ -52,7 +52,8 @@ class ProfileScreen extends Component {
   }
 
   renderHeader = () => {
-    const { state: {pictureSrc} } = this.context;
+    const { state: {userInfo} } = this.context;
+    const pictureSrc = {uri: userInfo.profilePictureUrl}
     return (
       <View style={{marginHorizontal: 20, marginTop: 20, backgroundColor: 'white', alignItems: 'center'}}>
         <Image
