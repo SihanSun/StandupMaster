@@ -4,6 +4,9 @@ import { View, Text, SafeAreaView, Image, FlatList, Button, TouchableOpacity, As
 import { Context as UserContext } from '../context/UserContext';
 import SingleEntryCard from '../components/SingleEntryCard';
 import styles from '../styles';
+import { Context as SharedContext } from '../context/SharedContext';
+import { getStatus, putStatus } from '../api/userStatus';
+import { getUsers, putUsers } from '../api/users';
 
 const PREV_WORK = "prevWork";
 const IS_BLOCKED = "isBlocked";
@@ -15,6 +18,9 @@ const NOT_UPLOADED = "not uploaded"
 
 
 class CardScreen extends Component {
+
+  static contextType = SharedContext;
+
   constructor(props) {
     super(props);
 
@@ -24,7 +30,6 @@ class CardScreen extends Component {
       isBlocked: false,
       block: '',
       planToday: '',
-      uploadStatus: 'NOT UPLOADED'
     }
   }
 
@@ -62,31 +67,44 @@ class CardScreen extends Component {
   }
 
   fetchUserStatus = async () => {
-    const prevWork = await this.fetchLocalContent(PREV_WORK);
-    const isBlocked = await this.fetchLocalContent(IS_BLOCKED);
-    const block = await this.fetchLocalContent(BLOCK);
-    const planToday = await this.fetchLocalContent(PLAN_TODAY);
-    const uploadStatus = await this.fetchLocalContent(UPLOAD_STATUS);
+    let prevWork = await this.fetchLocalContent(PREV_WORK);
+    prevWork = prevWork ? prevWork : '';
+    let isBlocked = await this.fetchLocalContent(IS_BLOCKED);
+    isBlocked = isBlocked ? isBlocked : false;
+    let block = await this.fetchLocalContent(BLOCK);
+    block = block ? block : '';
+    let planToday = await this.fetchLocalContent(PLAN_TODAY);
+    planToday = planToday ? planToday : '';
 
-    this.setState({ prevWork, isBlocked, block, planToday, 
-      uploadStatus : uploadStatus ? uploadStatus : NOT_UPLOADED});
+    this.setState({ prevWork, isBlocked, block, planToday });
+
+    const { state: { cognitoUser }, setUserStatus, setUserInfo } = this.context;
+    const jwtToken = cognitoUser.signInUserSession.idToken.jwtToken;
+    const email = cognitoUser.attributes.email;
+
+    const userStatus = await getStatus(jwtToken, email);
+
+    userStatus && setUserStatus(userStatus);
+
+    const userInfo = await getUsers(jwtToken, email);
+    userInfo && setUserInfo(userInfo);
   }
 
   renderHeader = () => {
     const { isBlocked } = this.state;
+
+    const { state: { userInfo }} = this.context;
+    const { profilePictureUrl, displayName } = userInfo;
+    const pictureSrc = {uri: profilePictureUrl}
     return (
       <View style={{margin: 20, backgroundColor: 'white'}}>
         <View style={{flexDirection: 'row', marginBottom: 10}}>
           <View style={{alignItems: 'center'}}>
-            <UserContext.Consumer>
-              {({ state: { pictureSrc } }) => (
-                <Image
-                  style={styles.largeImage}
-                  source={pictureSrc}
-                />
-              )}
-            </UserContext.Consumer>
-            <Text style={{fontSize: 20, marginTop: 5}}>Sihan Sun</Text>
+            <Image
+              style={styles.largeImage}
+              source={pictureSrc}
+            />
+            <Text style={{fontSize: 20, marginTop: 5}}>{displayName}</Text>
           </View>
           <View style={{alignItems: 'center', justifyContent: 'center', flex: 1, flexDirection: 'row'}}>
             <TouchableOpacity
@@ -148,14 +166,37 @@ class CardScreen extends Component {
     )
   }
 
-  upload = () => {
+  upload = async () => {
     // TODO
-    this.setState({ uploadStatus: UPLOADED });
-    this.storeToLocal(UPLOAD_STATUS, UPLOADED);
+    const { state: {cognitoUser}, uploadUserStatus } = this.context;
+    const jwtToken = cognitoUser.signInUserSession.idToken.jwtToken;
+    const email = cognitoUser.attributes.email;
+    const { isBlocked, prevWork, block, planToday } = this.state;
+    const data = {
+      email,
+      isBlocked, 
+      presentation: {
+        prevWork,
+        blockedBy: block,
+        planToday
+      }
+    }
+    console.log(data);
+    await uploadUserStatus(jwtToken, data);
   }
 
   render() {
-    const { prevWork, isBlocked, block, planToday, uploadStatus } = this.state;
+    const { prevWork, isBlocked, block, planToday } = this.state;
+
+    const { state: {userStatus} } = this.context;
+    let uploaded = false;
+    if (userStatus) {
+      const { presentation } = userStatus;
+      uploaded = prevWork === presentation.prevWork 
+        && block === presentation.blockBy && planToday === presentation.planToday
+        && isBlocked === userStatus.isBlocked;
+    }
+      
     const data = [
       {
         key: PREV_WORK,
@@ -176,7 +217,7 @@ class CardScreen extends Component {
       content: planToday
     });
 
-    const disableUpload = uploadStatus === UPLOADED ? true : false;
+    const disableUpload = uploaded ? true : false;
     return (
       <SafeAreaView style={[styles.container]}>
         <View style={styles.mainUI}>

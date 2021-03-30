@@ -30,7 +30,7 @@ const EditPropertyScreen = ({ navigation, route}) => {
         <TouchableOpacity 
           style={{justifyContent: 'center'}}
           onPress={() => {
-            onSave({name, value: val});
+            onSave(val);
             navigation.goBack()
           }}
         >

@@ -6,8 +6,10 @@ import { MaterialCommunityIcons, Feather } from '@expo/vector-icons';
 import RowTemplate from '../components/RowTemplate';
 import Summaries from '../components/Summaries';
 import styles from '../styles';
-import { Context as UserContext } from '../context/UserContext'; 
-import { Context as TeamContext } from '../context/TeamContext';
+import { Context as SharedContext } from '../context/SharedContext';
+import { getTeam } from '../api/teams';
+import { getStatus } from '../api/userStatus';
+const PROFILE_PICTURE_DEFAULT = require('../../assets/meeting.jpg');
 
 const TEAM_INDEX= 0;
 const RECORD_INDEX = 1;
@@ -15,16 +17,16 @@ const JOIN_ICON = require('../../assets/up-arrow.png');
 
 class HomeScreen extends Component {
 
-  static contextType = UserContext;
+  static contextType = SharedContext;
 
   constructor(props) {
     super(props);
 
     this.state = {
       isRefreshing: false,
-      cognitoUser: null,
       selectedIndex: TEAM_INDEX,
-      teamMembers: [],
+      teamInfo: null,
+      membersStatus: [],
       pastRecords: [],
       modalVisible: false,
       selectedSummaries: []
@@ -32,10 +34,39 @@ class HomeScreen extends Component {
   }
 
   componentDidMount() {
-    const { state: { cognitoUser } } = this.context;
-    this.setState({ cognitoUser }) ;
-    this.fetchTeamMembers();
-    this.fetchPastRecords();
+    this.fetchTeamInfo();
+  }
+
+  fetchTeamInfo = async () => {
+    const { state: { cognitoUser, userInfo }, setTeamInfo } = this.context;
+    const jwtToken = cognitoUser.signInUserSession.idToken.jwtToken;
+    const teamId = userInfo.teamId;
+
+    console.log(jwtToken);
+
+    const teamInfo = await getTeam(jwtToken, teamId);
+    setTeamInfo(teamInfo);
+
+    this.setState({teamInfo});
+    const members = teamInfo.members;
+    
+    const membersStatus = [];
+    for (let i = 0; i < members.length; i = i+1) {
+      const { email, profilePictureUrl, displayName, firstName, lastName } = members[i];
+      const { presentation, isBlocked } = await getStatus(jwtToken, email);
+      console.log('hi');
+      console.log(isBlocked);
+      membersStatus.push({
+        email,
+        presentation,
+        isBlocked,
+        profilePictureUrl,
+        displayName,
+        firstName,
+        lastName
+      });
+    }
+    this.setState({membersStatus});
   }
 
   onRefresh = () => {
@@ -45,61 +76,26 @@ class HomeScreen extends Component {
     }, 2000)
   }
 
-  fetchTeamMembers = async () => {
-    const teamMembers = [
-      {
-        name: 'Lizhou Cai',
-        email: 'lizhou.cai@yale.edu',
-        imageUrl: require('../../assets/bart-simpson.jpg'),
-        lastModified: 1614306931,
-        isBlocked: false
-      }, {
-        name: 'Jasky Yang',
-        email: 'jiaqi.yang@yale.edu',
-        imageUrl: require('../../assets/Bugs-Bunny.jpg'),
-        lastModified: 1614306931,
-        isBlocked: true
-      },{
-        name: 'Daly Joseph',
-        email: 'daly.joseph@yale.edu',
-        imageUrl: require('../../assets/Fred-Flintstone.jpg'),
-        lastModified: 1614306931,
-        isBlocked: false
-      },{
-        name: 'Robert Lopez',
-        email: 'robert.lopez@yale.edu',
-        imageUrl: require('../../assets/Mickey-Mouse.jpg'),
-        lastModified: 1614306931,
-        isBlocked: false
-      },{
-        name: 'Kai Li',
-        email: 'kai.li@yale.edu',
-        imageUrl: require('../../assets/Patrick-Star.png'),
-        lastModified: 1614306931,
-        isBlocked: true
-      },{
-        name: 'Sihan Sun',
-        email: 'sihan.sun@yale.edu',
-        imageUrl: require('../../assets/pokemon.png'),
-        lastModified: 1614306931,
-        isBlocked: false
+  fetchSummaryForUser = (email) => {
+    const { membersStatus } = this.state;
+    console.log(membersStatus);
+    for (let i = 0; i < membersStatus.length; i = i+1) {
+      const ms = membersStatus[i];
+      if (ms.email === email) {
+        const { presentation, isBlocked, profilePictureUrl, displayName } = ms;
+        const { prevWork, block, planToday } = presentation
+
+        return {
+          id: email,
+          prevWork,
+          block,
+          planToday,
+          name: displayName,
+          pictureUrl: profilePictureUrl
+        } 
       }
-    ];
+    }
 
-    this.setState({ teamMembers });
-  }
-
-  fetchSummaryForUser = async (email) => {
-    const currentSummary =  {
-      email: 'sihan.sun@yale.edu',
-      isBlocked: false,
-      prevWork: 'this is the prev work',
-      block: 'N/A',
-      planToday: 'Finish the modal. To test this functionality, I wrote this SUPER long text to check how the card will be resized',
-      name: 'Sihan Sun',
-      pictureUrl: null
-    };
-    return currentSummary;
   }
 
   fetchPastRecords = () => {
@@ -244,36 +240,44 @@ class HomeScreen extends Component {
 
   renderHeader = () => {
     const { navigation } = this.props;
+    const { teamInfo } = this.state;
+    const { membersStatus } = this.state;
+    const totalNum = membersStatus.length;
+    let blockedNum = 0;
+    for (let i = 0; i < totalNum; i = i+1) {
+      const { isBlocked } = membersStatus[i];
+      if (isBlocked) {
+        blockedNum += 1;
+      }
+    }
+    const okNum = totalNum -blockedNum;
+
+    const teamProfile = teamInfo ? { uri: teamInfo.profilePictureUrl } : PROFILE_PICTURE_DEFAULT
+    const teamName = teamInfo ? teamInfo.name : '';
+    const teamAnnouncement = teamInfo ? teamInfo.announcement : '';
+
     return (
       <View style={{marginHorizontal: 20, marginTop: 20, backgroundColor: 'white'}}>
         <TouchableOpacity 
           onPress={() => navigation.navigate('TeamProfile')}
           style={{flexDirection: 'row', marginBottom: 10}}>
-            <TeamContext.Consumer>
-              {({state: {pictureSrc}}) => (
-                <Image
-                  style={styles.largeImage}
-                  source={pictureSrc}
-                />
-              )}
-            </TeamContext.Consumer>
+            <Image
+              style={styles.largeImage}
+              source={teamProfile}
+            />
           <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-            <TeamContext.Consumer>
-              {({ state: { name }} ) => (
-                <Text style={[styles.textLarge]}>{name}</Text>
-              )}
-            </TeamContext.Consumer>
+            <Text style={[styles.textLarge]}>{teamName}</Text>
             <View style={{flexDirection: 'row', marginTop: 5}}>
               <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
-                <Text style={{fontSize: 20, fontWeight: 'bold'}}>6</Text>
+                <Text style={{fontSize: 20, fontWeight: 'bold'}}>{totalNum}</Text>
                 <Text style={{fontSize: 16}}>Members</Text>
               </View>
               <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
-                <Text style={{fontSize: 20, fontWeight: 'bold'}}>4</Text>
+                <Text style={{fontSize: 20, fontWeight: 'bold'}}>{okNum}</Text>
                 <Text style={{fontSize: 16}}>OK</Text>
               </View>
               <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
-                <Text style={{fontSize: 20, fontWeight: 'bold'}}>2</Text>
+                <Text style={{fontSize: 20, fontWeight: 'bold'}}>{blockedNum}</Text>
                 <Text style={{fontSize: 16}}>Blocked</Text>
               </View>
             </View>
@@ -284,13 +288,9 @@ class HomeScreen extends Component {
         </TouchableOpacity>
         <View style={{flexDirection: 'row', marginTop: 10}}>
           <View style={[{flex: 3, height: 80}, styles.textBox]}>
-            <TeamContext.Consumer>
-              {({ state: { announcement }}) => (
-                <ScrollView>
-                  <Text>{announcement}</Text>
-                </ScrollView>
-              )}
-            </TeamContext.Consumer>
+            <ScrollView>
+              <Text>{teamAnnouncement}</Text>
+            </ScrollView>
           </View>
           <View style={{flex: 1, alignItems: 'center'}}>
             <TouchableOpacity>
@@ -318,22 +318,23 @@ class HomeScreen extends Component {
   }
 
   renderTeamMember = ({ item }) => {
-    const { name, email, imageUrl, lastModified, isBlocked } = item;
+    // const { name, email, imageUrl, lastModified, isBlocked } = item;
+    const { email, displayName, profilePictureUrl, isBlocked } = item;
 
-    const { time } = this.readTimestamp(lastModified);
+    // const { time } = this.readTimestamp(lastModified);
 
     const status = isBlocked ? require('../../assets/delete.png') : require('../../assets/checkmark.png');
     return (
       <RowTemplate
         onPress={async () => {
-          const summary = await this.fetchSummaryForUser(email);
+          const summary = this.fetchSummaryForUser(email);
           this.setState({selectedSummaries: [summary], modalVisible: true})
         }}
-        image={imageUrl}
-        title={name}
+        image={{uri: profilePictureUrl}}
+        title={displayName}
         description={email}
         secondaryImage={status}
-        metaInfo={time}
+        metaInfo={null}
       />
     )
   }
@@ -360,9 +361,9 @@ class HomeScreen extends Component {
   }
 
   renderMainSection = () => {
-    const { teamMembers, pastRecords, selectedIndex } = this.state;
+    const { membersStatus, pastRecords, selectedIndex } = this.state;
 
-    const data = selectedIndex === TEAM_INDEX ? teamMembers : pastRecords;
+    const data = selectedIndex === TEAM_INDEX ? membersStatus : pastRecords;
     const renderFunc = selectedIndex === TEAM_INDEX ? this.renderTeamMember : this.renderPastRecords;
     return (
       <View style={{flex: 1, backgroundColor: '#fafafa'}}>

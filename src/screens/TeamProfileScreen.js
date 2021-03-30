@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, SafeAreaView, Image, TouchableOpacity, FlatList, Platform } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { AntDesign } from '@expo/vector-icons';
-import { Context as TeamContext } from '../context/TeamContext';
-import { Context as UserContext } from '../context/UserContext';
+import { Context as SharedContext } from '../context/SharedContext';
 
 import styles from '../styles';
 import PropertyTemplate from '../components/PropertyTemplate';
@@ -15,7 +14,7 @@ const INVITATION_CODE = "Invitation Code";
 
 class TeamProfileScreen extends Component {
 
-  static contextType = TeamContext;
+  static contextType = SharedContext;
 
   constructor(props) {
     super(props);
@@ -49,7 +48,7 @@ class TeamProfileScreen extends Component {
     });
 
     if (!result.cancelled) {
-      const { setTeamProfilePicture } = this.context;
+      const { setTeamInfo } = this.context;
       setTeamProfilePicture({ uri: result.uri });
     }
   }
@@ -72,7 +71,8 @@ class TeamProfileScreen extends Component {
   }
 
   renderHeader = () => {
-    const { state: { pictureSrc } } = this.context;
+    const { state: { teamInfo } } = this.context;
+    const pictureSrc = {uri: teamInfo.profilePictureUrl}
     return (
       <View style={{marginHorizontal: 20, marginTop: 20, backgroundColor: 'white', alignItems: 'center'}}>
         <Image
@@ -95,7 +95,7 @@ class TeamProfileScreen extends Component {
     const onPress = item.name === INVITATION_CODE
       ? null    
       : () => { navigation.navigate('EditTeamProperty', 
-        { property: item, onSave: ({value}) => setValue(value), limit: { shouldLimit }}
+        { property: item, onSave: (value) => setValue(value), limit: { shouldLimit }}
       )};
     return (
       <PropertyTemplate
@@ -106,24 +106,33 @@ class TeamProfileScreen extends Component {
     )
   }
 
+  changeTeamName = (value) => {
+    const { state: {teamInfo, cognitoUser }, setTeamName } = this.context;
+    const jwtToken = cognitoUser.signInUserSession.idToken.jwtToken
+    setTeamName(jwtToken, teamInfo, value);
+  }
+
+  changeTeamAnnouncement = (value) => {
+    const { state: {teamInfo, cognitoUser }, setTeamAnnouncement } = this.context;
+    const jwtToken = cognitoUser.signInUserSession.idToken.jwtToken
+    setTeamAnnouncement(jwtToken, teamInfo, value);
+  }
+
   render() {
-    const { state: {
-        name, announcement, invitationCode 
-      },
-      setTeamName, setTeamAnnouncement
-    } = this.context;
+    const { state: {teamInfo}, setTeamName } = this.context;
+    const { id, name, announcement } = teamInfo;
 
     const properties = [{
       name: TEAM_NAME,
       value: name,
-      setValue: setTeamName
+      setValue: this.changeTeamName
     }, {
       name: ANNOUNCEMENT,
       value: announcement,
-      setValue: setTeamAnnouncement
+      setValue: this.changeTeamAnnouncement
     }, {
       name: INVITATION_CODE,
-      value: invitationCode,
+      value: null,
       setValue: null
     }];
 

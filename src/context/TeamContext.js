@@ -13,6 +13,10 @@ const teamReducer = (state, action) => {
       return { ...state, pictureSrc: action.payload };
     case 'set_invitation_code':
       return { ...state, invitationCode: action.payload };
+    case 'set_team_members':
+      return { ...state, members: action.payload };
+    case 'set_team_owner':
+      return { ...state, owner: action.payload };
     default:
       return state;
   }
@@ -38,16 +42,30 @@ const setTeamProfilePicture = dispatch => {
 
 const setTeamInvitationCode = dispatch => {
   return (code) => {
-    dispatch({ type: 'set_invitation_code', payload: code });
+    code && dispatch({ type: 'set_invitation_code', payload: code });
+  }
+}
+
+const setTeamMembers = dispatch => {
+  return (members) => {
+    members && dispatch({ type: 'set_team_members', payload: members });
+  }
+}
+
+const setTeamOwner = dispatch => {
+  return (teamOwner) => {
+    teamOwner && dispatch({ type: 'set_team_owner', payload: teamOwner });
   }
 }
 
 export const { Provider, Context } = createDataContext(
   teamReducer,
-  { setTeamName, setTeamAnnouncement, setTeamProfilePicture, setTeamInvitationCode },
+  { setTeamName, setTeamAnnouncement, setTeamProfilePicture, setTeamInvitationCode, setTeamMembers, setTeamOwner },
   { name: 'Team Default', 
     announcement: 'There is no new announcement today',
     pictureSrc: PROFILE_PICTURE_DEFAULT,
-    invitationCode: ''
+    invitationCode: '',
+    members: [],
+    owner: null
    }
 );

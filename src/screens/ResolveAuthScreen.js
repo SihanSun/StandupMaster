@@ -5,7 +5,9 @@ import Amplify, { Auth, Hub } from 'aws-amplify';
 import { withAuthenticator, withOAuth } from 'aws-amplify-react-native'
 import * as WebBrowser from 'expo-web-browser';
 
-import { Context as UserContext } from '../context/UserContext';
+import { Context as SharedContext } from '../context/SharedContext';
+import { getTeam } from '../api/teams';
+import { getUsers } from '../api/users';
 
 Amplify.configure({
     Auth: {
@@ -59,8 +61,8 @@ Amplify.configure({
         oauth: {
             domain: 'standup-master.auth.us-east-2.amazoncognito.com',
             scope: ['email', 'openid', 'aws.cognito.signin.user.admin', 'profile'],
-            redirectSignIn: 'exp://x6-uud.anonymous.standupmaster.exp.direct',
-            redirectSignOut: 'exp://x6-uud.anonymous.standupmaster.exp.direct',
+            redirectSignIn: 'exp://eq-9p5.anonymous.standupmaster.exp.direct',
+            redirectSignOut: 'exp://eq-9p5.anonymous.standupmaster.exp.direct',
             // redirectSignIn: 'StandupMaster://',
             // redirectSignOut: 'StandupMaster://',
             responseType: 'code', // or 'token', note that REFRESH token will only be generated when the responseType is code
@@ -147,13 +149,37 @@ const doAuth = (props) => {
   } = props;
 
   const {
-    setCognitoUser
-  } = useContext(UserContext);
+    setCognitoUser,
+    setUserInfo
+  } = useContext(SharedContext);
+
+  const fetchUserAndTeamInfo = async (oAuthUser) => {
+    if (oAuthUser) {
+      setCognitoUser(oAuthUser);
+
+      // extract jwtToken and email
+      const jwtToken = oAuthUser.signInUserSession.idToken.jwtToken;
+      const email = oAuthUser.attributes.email;
+
+      // fetch user information
+      const userInfo = await getUsers(jwtToken, email);
+      setUserInfo(userInfo);
+
+      const teamId = userInfo.teamId;
+
+      if (teamId) {
+        navigation.navigate('home');
+      } else {
+        navigation.navigate('joinTeam')
+      }
+    }
+  }
 
   useEffect(() => {
     if (oAuthUser) {
       setCognitoUser(oAuthUser);
-      navigation.navigate('home');
+
+      fetchUserAndTeamInfo(oAuthUser);
     }
   }, [oAuthUser]);
 

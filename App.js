@@ -16,8 +16,7 @@ import EditPropertyScreen from './src/screens/EditPropertyScreen';
 import TeamProfileScreen from './src/screens/TeamProfileScreen';
 
 // context provider
-import { Provider as UserProvider } from './src/context/UserContext';
-import { Provider as TeamProvider } from './src/context/TeamContext';
+import { Provider as SharedContextProvider } from './src/context/SharedContext';
 
 // utilities
 import { setNavigator } from './src/navigationRef';
@@ -90,14 +89,12 @@ const App = createAppContainer(navigator);
 
 export default () => {
   return (
-    <UserProvider>
-      <TeamProvider>
-        <App 
-          ref={navigator => {
+    <SharedContextProvider>
+      <App 
+        ref={navigator => {
           setNavigator(navigator);
          }}
-        />
-      </TeamProvider>
-    </UserProvider>
+      />
+    </SharedContextProvider>
   )
 };
