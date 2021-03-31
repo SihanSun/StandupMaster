@@ -286,7 +286,9 @@ class HomeScreen extends Component {
             </ScrollView>
           </View>
           <View style={{flex: 1, alignItems: 'center'}}>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('Meeting')}
+              >
               <Image
                 style={styles.mediumImage}
                 source={JOIN_ICON}

@@ -14,6 +14,7 @@ import CardScreen from './src/screens/CardScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 import EditPropertyScreen from './src/screens/EditPropertyScreen';
 import TeamProfileScreen from './src/screens/TeamProfileScreen';
+import JoinMeetingScreen from './src/screens/JoinMeetingScreen';
 
 // context provider
 import { Provider as SharedContextProvider } from './src/context/SharedContext';
@@ -38,7 +39,15 @@ const navigator = createSwitchNavigator({
   mainFlow: createBottomTabNavigator({
     home: {
       screen: createStackNavigator({
-        Home: HomeScreen,
+        Home: createStackNavigator({
+          Team: HomeScreen,
+          Meeting: JoinMeetingScreen
+        },{
+          headerMode: null,
+          defaultNavigationOptions: {
+            gestureEnabled: false
+          }
+        }),
         TeamProfile: TeamProfileScreen,
         EditTeamProperty: EditPropertyScreen
       }, {
