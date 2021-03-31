@@ -28,7 +28,7 @@ class ProfileScreen extends Component {
     const { state: { teamInfo, cognitoUser } }  = this.context;
     const jwtToken = cognitoUser.signInUserSession.idToken.jwtToken;
     await addTeamMember(jwtToken, teamInfo.id, email);
-    const newTeamInfo = await getTeam(jwtToken, teamInfo.Id);
+    const newTeamInfo = await getTeam(jwtToken, teamInfo.id);
     const { setTeamInfo } = this.context;
     setTeamInfo(newTeamInfo);
   }
@@ -37,7 +37,7 @@ class ProfileScreen extends Component {
     const { state: { teamInfo, cognitoUser } } = this.context;
     const jwtToken = cognitoUser.signInUserSession.idToken.jwtToken;
     await deletePendingMemeber(jwtToken, teamInfo.id, email);
-    const newTeamInfo = await getTeam(jwtToken, teamInfo.Id);
+    const newTeamInfo = await getTeam(jwtToken, teamInfo.id);
     const { setTeamInfo } = this.context;
     setTeamInfo(newTeamInfo);
   }
