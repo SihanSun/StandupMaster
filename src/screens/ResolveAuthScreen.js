@@ -167,7 +167,7 @@ const doAuth = (props) => {
 
       const teamId = userInfo.teamId;
 
-      if (teamId) {
+      if (teamId && userInfo.pendingToJoinTeam === false) {
         navigation.navigate('home');
       } else {
         navigation.navigate('joinTeam')

@@ -22,9 +22,9 @@ export function SignTextInput({ leftIcon, ...otherProps }) {
                 />
             )}
             <TextInput
-                style={styles.input}
-                placeholderTextColor="#6e6869"
                 {...otherProps}
+                style={[styles.input, otherProps.style]}
+                placeholderTextColor="#6e6869"
             />
         </View>
     );
