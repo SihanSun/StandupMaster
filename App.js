@@ -6,8 +6,11 @@ import { MaterialIcons, Ionicons, MaterialCommunityIcons, FontAwesome } from '@e
 
 // screen
 import ResolveAuthScreen from './src/screens/ResolveAuthScreen';
-import SigninScreen from './src/screens/SigninScreen';
-import SignupScreen from './src/screens/SignupScreen';
+import SignInScreenFeature from './src/screens/SigninScreenFeature';
+import SignUpScreenFeature from './src/screens/SignupScreenFeature';
+import SignInScreen from './src/screens/SigninScreen';
+import SignUpScreen from './src/screens/SignupScreen';
+import ConfirmationScreen from './src/screens/ConfirmationScreen';
 import JoinTeamScreen from './src/screens/JoinTeamScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import CardScreen from './src/screens/CardScreen';
@@ -15,6 +18,7 @@ import ProfileScreen from './src/screens/ProfileScreen';
 import EditPropertyScreen from './src/screens/EditPropertyScreen';
 import TeamProfileScreen from './src/screens/TeamProfileScreen';
 import JoinMeetingScreen from './src/screens/JoinMeetingScreen';
+import PendingMemberScreen from './src/screens/PendingMemberScreen';
 
 // context provider
 import { Provider as SharedContextProvider } from './src/context/SharedContext';
@@ -23,12 +27,14 @@ import { Provider as SharedContextProvider } from './src/context/SharedContext';
 import { setNavigator } from './src/navigationRef';
 import styles, { StyleSheet } from './src/styles';
 
+const signInfeature = false;
 // navigation
 const navigator = createSwitchNavigator({
   resolveAuth: ResolveAuthScreen,
   loginFlow: createStackNavigator({
-    Signin: SigninScreen,
-    Signup: SignupScreen
+    Signin: signInfeature ? { screen: SignInScreenFeature } : { screen: SignInScreen }, // if feature if true; call signinscreenFeature name
+    Signup: signInfeature ? { screen: SignUpScreenFeature } : { screen: SignUpScreen }, // prod env, dev env, switching env, 
+    confirm: { screen: ConfirmationScreen }
   }, {
     headerMode: 'none',
     navigationOptions: {
@@ -48,7 +54,12 @@ const navigator = createSwitchNavigator({
             gestureEnabled: false
           }
         }),
-        TeamProfile: TeamProfileScreen,
+        TeamProfile: createStackNavigator({
+          EditTeam: TeamProfileScreen,
+          pendingMember: PendingMemberScreen,
+        },{
+          headerMode: null
+        }),
         EditTeamProperty: EditPropertyScreen
       }, {
         headerMode: null
@@ -91,7 +102,7 @@ const navigator = createSwitchNavigator({
     },
   })
 }, {
-  initialRouteName: 'resolveAuth'
+  initialRouteName: signInfeature ? 'loginFlow': 'resolveAuth'
 })
 
 const App = createAppContainer(navigator);

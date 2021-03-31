@@ -148,6 +148,22 @@ const setTeamAnnouncement = dispatch => {
   }
 }
 
+const setTeamProfilePicture = dispatch => {
+  return async (jwtToken, teamInfo, profilePicture) => {
+    const { id, name, owner, announcement } = teamInfo;
+    const payload = {
+      name,
+      ownerEmail: owner.email,
+      announcement,
+      profilePicture
+    }
+    const data = JSON.stringify(payload);
+    await putTeam(jwtToken, id, data);
+    const newTeamInfo = await getTeam(jwtToken, id); 
+    teamInfo && dispatch({ type: 'set_team_info', payload: newTeamInfo });
+  }
+}
+
 const setUserStatus = dispatch => {
   return (userStatus) => {
     userStatus && dispatch({ type: 'set_user_status', payload: userStatus});
@@ -170,7 +186,7 @@ const uploadUserStatus = dispatch => {
 export const { Provider, Context } = createDataContext(
   SharedContextReducer,
   { setCognitoUser, signOut, setUserInfo, setTeamInfo, setUserStatus, setUserProfilePicture,
-    setTeamName, setTeamAnnouncement,
+    setTeamName, setTeamAnnouncement, setTeamProfilePicture,
     uploadUserStatus,
     setUserDisplayName, setUserFirstName, setUserLastName
    },

@@ -25,7 +25,6 @@ class HomeScreen extends Component {
     this.state = {
       isRefreshing: false,
       selectedIndex: TEAM_INDEX,
-      teamInfo: null,
       membersStatus: [],
       pastRecords: [],
       modalVisible: false,
@@ -44,12 +43,9 @@ class HomeScreen extends Component {
     const jwtToken = cognitoUser.signInUserSession.idToken.jwtToken;
     const teamId = userInfo.teamId;
 
-    console.log(jwtToken);
-
     const teamInfo = await getTeam(jwtToken, teamId);
     setTeamInfo(teamInfo);
 
-    this.setState({teamInfo});
     const members = teamInfo.members;
     
     const membersStatus = [];
@@ -71,7 +67,6 @@ class HomeScreen extends Component {
 
   fetchSummaryForUser = (email) => {
     const { membersStatus } = this.state;
-    console.log(membersStatus);
     for (let i = 0; i < membersStatus.length; i = i+1) {
       const ms = membersStatus[i];
       if (ms.email === email) {
@@ -233,8 +228,8 @@ class HomeScreen extends Component {
 
   renderHeader = () => {
     const { navigation } = this.props;
-    const { teamInfo } = this.state;
     const { membersStatus } = this.state;
+    const { state: { userInfo, teamInfo } } = this.context;
     const totalNum = membersStatus.length;
     let blockedNum = 0;
     for (let i = 0; i < totalNum; i = i+1) {
@@ -243,16 +238,18 @@ class HomeScreen extends Component {
         blockedNum += 1;
       }
     }
-    const okNum = totalNum -blockedNum;
+    const okNum = totalNum - blockedNum;
 
     const teamProfile = teamInfo ? { uri: teamInfo.profilePictureUrl } : PROFILE_PICTURE_DEFAULT
     const teamName = teamInfo ? teamInfo.name : '';
     const teamAnnouncement = teamInfo ? teamInfo.announcement : '';
 
+    const isOwner = teamInfo ? teamInfo.owner.email === userInfo.email : false;
+
     return (
       <View style={{marginHorizontal: 20, marginTop: 20, backgroundColor: 'white'}}>
         <TouchableOpacity 
-          onPress={() => navigation.navigate('TeamProfile')}
+          onPress={() => isOwner && navigation.navigate('TeamProfile')}
           style={{flexDirection: 'row', marginBottom: 10}}>
             <Image
               style={styles.largeImage}

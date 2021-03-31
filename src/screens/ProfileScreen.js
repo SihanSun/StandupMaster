@@ -112,7 +112,8 @@ class ProfileScreen extends Component {
     const { state: { cognitoUser, userInfo }, setUserLastName } = this.context;
     const jwtToken = cognitoUser.signInUserSession.idToken.jwtToken;
     const { email, teamId } = userInfo;
-    removeTeamMember(jwtToken, teamId, email);
+    await removeTeamMember(jwtToken, teamId, email);
+    this.props.navigation.navigate('joinTeam');
   }
 
   render() {
