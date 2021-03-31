@@ -277,8 +277,8 @@ class JoinMeetingScreen extends Component {
     const chosenAttendee = unspokenAttendees[idx];
     this.setState({currentSpeaker: chosenAttendee});
 
-    const { state: {teamInfo}} = this.context;
-    const teamId = teamInfo.teamId;
+    const { state: {userInfo}} = this.context;
+    const teamId = userInfo.teamId;
     db.ref(`${teamId}/currentSpeaker`).set(chosenAttendee);
   }
 
