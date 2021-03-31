@@ -3,7 +3,7 @@ import { View, Text, SafeAreaView, Image, TouchableOpacity, FlatList, Platform, 
 import * as ImagePicker from 'expo-image-picker';
 import { AntDesign } from '@expo/vector-icons';
 import { Context as SharedContext } from '../context/SharedContext';
-import { addTeamMember, deletePendingMemeber } from '../api/teams';
+import { addTeamMember, deletePendingMemeber, getTeam } from '../api/teams';
 
 import RowTemplate from '../components/RowTemplate';
 import styles from '../styles';
@@ -28,12 +28,18 @@ class ProfileScreen extends Component {
     const { state: { teamInfo, cognitoUser } }  = this.context;
     const jwtToken = cognitoUser.signInUserSession.idToken.jwtToken;
     await addTeamMember(jwtToken, teamInfo.id, email);
+    const newTeamInfo = await getTeam(jwtToken, teamId);
+    const { setTeamInfo } = this.context;
+    setTeamInfo(newTeamInfo);
   }
 
   deny = async (email) => {
     const { state: { teamInfo, cognitoUser } } = this.context;
     const jwtToken = cognitoUser.signInUserSession.idToken.jwtToken;
     await deletePendingMemeber(jwtToken, teamInfo.id, email);
+    const newTeamInfo = await getTeam(jwtToken, teamId);
+    const { setTeamInfo } = this.context;
+    setTeamInfo(newTeamInfo);
   }
 
   renderNavigation = () => {
