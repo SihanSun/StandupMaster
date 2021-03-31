@@ -5,6 +5,8 @@ import RowTemplate from '../components/RowTemplate';
 import Summaries from '../components/Summaries';
 import { getStatus } from '../api/userStatus';
 import styles from '../styles';
+import { db } from '../config';
+
 class JoinMeetingScreen extends Component {
 
   static contextType = SharedContext;
@@ -31,7 +33,7 @@ class JoinMeetingScreen extends Component {
   initialize = async () => {
     await this.fetchMembeStatus();
     await this.registerSelfToMeeting();
-    await this.onAttendeesUpdate();
+    await this.listenMeeintUpdate();
   }
 
   registerSelfToMeeting = async () => {
@@ -41,25 +43,65 @@ class JoinMeetingScreen extends Component {
 
     // TODO
     // use teamId as key and push email to the attendees list
+    db.ref(`/${teamId}/currentSpeaker`).set(email);
 
     if (teamInfo.owner.email === userInfo.email) {
       // set current speaker to be this email (first speaker is the owner)
+      db.ref(`/${teamId}/attendees`).push(email);
     }
 
   }
 
-  onAttendeesUpdate = async () => {
-    // TODO
-    // get snapshot of the team info
-    const attendees = ['sihan.sun@yale.edu', 'lizhou.cai@yale.edu', 'dalymjoseph@gmail.com'];
-    const currentSpeaker = 'sihan.sun@yale.edu';
+  listenMeeintUpdate = () => {
+    const { state: { cognitoUser, userInfo, teamInfo }, setTeamInfo } = this.context;
+    const email = userInfo.email;
+    const teamId = userInfo.teamId;
 
-    this.setState({currentSpeaker, attendees});
+    db.ref(`/${teamId}/currentSpeaker`).on('value', querySnapShot => {
+      const currentSpeaker = querySnapShot.val();
+      this.setState({currentSpeaker});
+    });
+
+    db.ref(`/${teamId}/attendees`).on('value', querySnapShot => {
+      const data = querySnapShot.val();
+      const attendees = []
+      if (data) {
+        for (const [key, value] of Object.entries(data)) {
+          attendees.push({key, email: value});
+        }
+      }
+      this.setState({attendees});
+    })
+  }
+
+
+  isOwner = () => {
+    const { state: { userInfo, teamInfo } } = this.context;
+    return userInfo.email === teamInfo.owner.email;
   }
 
   onUserQuit = async () => {
     //TODO remove user from the attendee list, if lastone, remove current speaker
+    if (this.isOwner()) {
+      const { attendees } = this.state;
+      if (attendees.length > 1) {
+        return;
+      }
+    }
 
+    const { state: {userInfo}} = this.context;
+    const { attendees, currentSpeaker } = this.state;
+    const teamId = userInfo.teamId;
+    for (let i = 0; i < attendees.length; i += 1) {
+      const {key, email} = attendees[i];
+      if (email === userInfo.email) {
+        db.ref(`${teamId}/attendees/${key}`).remove();
+      }
+    }
+
+    if (currentSpeaker === userInfo.email) {
+      db.ref(`${teamId}/currentSpeaker`).remove();
+    }
     // goback
     this.props.navigation.goBack();
   }
@@ -193,7 +235,7 @@ class JoinMeetingScreen extends Component {
     const { membersStatus, attendees } = this.state;
     const attendeesSet = new Set();
     for (let i = 0; i < attendees.length; i += 1) {
-      const attendee = attendees[i];
+      const attendee = attendees[i].email;
       attendeesSet.add(attendee);
     }
     const data = [];
@@ -225,7 +267,7 @@ class JoinMeetingScreen extends Component {
     const { attendees } = this.state;
     const unspokenAttendees = [];
     for (let i = 0; i < attendees.length; i += 1) {
-      const attendee = attendees[i];
+      const attendee = attendees[i].email;
       if (!this.finishedSpeakerSet.has(attendee)) {
         unspokenAttendees.push(attendee);
       }
