@@ -273,6 +273,9 @@ class JoinMeetingScreen extends Component {
       }
     }
 
+    if (unspokenAttendees.length === 0) {
+      return;
+    }
     const idx = Math.floor(Math.random() * unspokenAttendees.length);
     const chosenAttendee = unspokenAttendees[idx];
     this.setState({currentSpeaker: chosenAttendee});
