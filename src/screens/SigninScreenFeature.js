@@ -1,18 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { View, Text, TouchableOpacity, SafeAreaView, Alert} from 'react-native';
 import { Auth } from 'aws-amplify';
 import {SignButton, SignTextInput, styles} from '../components/SignButtons'
+import { Context as SharedContext } from '../context/SharedContext';
+import { getTeam } from '../api/teams';
+import { getUsers } from '../api/users';
 
 export default function SignInScreenFeature({ navigation }) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
+    const {
+        setCognitoUser,
+        setUserInfo
+    } = useContext(SharedContext);
+
     async function signIn() {
         try {
-            await Auth.signIn(username, password);
-            console.log(' Success');
-            navigation.navigate('home');
-        } // show alert // code confirmation should say email 
+            const authUser = await Auth.signIn(username, password);
+            setCognitoUser(authUser);
+            
+            // extract jwtToken and email
+            const jwtToken = authUser.signInUserSession.idToken.jwtToken;
+            const email = authUser.attributes.email;
+
+            // fetch user information
+            const userInfo = await getUsers(jwtToken, email);
+            setUserInfo(userInfo);
+            
+            const teamId = userInfo.teamId;
+
+            if (teamId) {
+                navigation.navigate('home');
+            } else {
+                navigation.navigate('joinTeam')
+            }
+            console.log('Success');
+        }
         catch (error) {
             Alert.alert(error.message)
             // console.log(' Error signing in...', error); 
