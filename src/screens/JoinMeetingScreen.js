@@ -280,7 +280,7 @@ class JoinMeetingScreen extends Component {
 
   renderPopcorn = () => {
     const { state: {teamInfo, userInfo }} = this.context;
-    if (true) {
+    if (userInfo.email === teamInfo.owner.email) {
       return (
         <View style={{borderTopWidth: 2, borderTopColor: '#f2f0eb'}}>
             <TouchableOpacity
