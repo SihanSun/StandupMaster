@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, SafeAreaView, Image, FlatList, Button, TouchableOpacity, AsyncStorage, Alert } from 'react-native';
 
-import { Context as UserContext } from '../context/UserContext';
 import SingleEntryCard from '../components/SingleEntryCard';
 import styles from '../styles';
 import { Context as SharedContext } from '../context/SharedContext';

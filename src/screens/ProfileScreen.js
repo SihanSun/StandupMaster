@@ -1,6 +1,7 @@
 import React, { useContext, Component } from 'react';
 import { View, Text, SafeAreaView, Image, TouchableOpacity, FlatList, Platform } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import * as ImageManipulator from 'expo-image-manipulator';
 
 import styles from '../styles';
 import PropertyTemplate from '../components/PropertyTemplate';
@@ -47,8 +48,11 @@ class ProfileScreen extends Component {
     });
 
     if (!result.cancelled) {
-      const { setUserProfilePicture } = this.context;
-      setUserProfilePicture({ uri: result.uri});
+      const { state: {cognitoUser, userInfo}, setUserProfilePicture } = this.context;
+      const jwtToken = cognitoUser.signInUserSession.idToken.jwtToken;
+
+      const response = await ImageManipulator.manipulateAsync(result.uri, [], { base64: true })
+      setUserProfilePicture(jwtToken, userInfo, JSON.stringify(response.base64));
     }
   }
 
