@@ -276,6 +276,10 @@ class JoinMeetingScreen extends Component {
     const idx = Math.floor(Math.random() * unspokenAttendees.length);
     const chosenAttendee = unspokenAttendees[idx];
     this.setState({currentSpeaker: chosenAttendee});
+
+    const { state: {teamInfo}} = this.context;
+    const teamId = teamInfo.teamId;
+    db.ref(`${teamId}/currentSpeaker`).set(chosenAttendee);
   }
 
   renderPopcorn = () => {
