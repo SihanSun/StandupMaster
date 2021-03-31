@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import { View, Text, SafeAreaView, Image, TouchableOpacity, FlatList, Platform } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { AntDesign } from '@expo/vector-icons';
+import * as ImageManipulator from 'expo-image-manipulator';
+
 import { Context as SharedContext } from '../context/SharedContext';
 import { addTeamMember, removeTeamMember } from '../api/teams';
-
 import styles from '../styles';
 import PropertyTemplate from '../components/PropertyTemplate';
 
@@ -22,7 +23,7 @@ class TeamProfileScreen extends Component {
     super(props);
 
     this.state = {
-      isRefreshing: false,
+      isRefreshing: false
     }
   }
 
@@ -50,8 +51,11 @@ class TeamProfileScreen extends Component {
     });
 
     if (!result.cancelled) {
-      const { setTeamInfo } = this.context;
-      setTeamProfilePicture({ uri: result.uri });
+      const { state: {teamInfo, cognitoUser }, setTeamProfilePicture } = this.context;
+      const jwtToken = cognitoUser.signInUserSession.idToken.jwtToken
+
+      const response = await ImageManipulator.manipulateAsync(result.uri, [], { base64: true })
+      setTeamProfilePicture(jwtToken, teamInfo, JSON.stringify(response.base64));
     }
   }
 
