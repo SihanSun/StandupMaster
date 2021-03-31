@@ -43,11 +43,11 @@ class JoinMeetingScreen extends Component {
 
     // TODO
     // use teamId as key and push email to the attendees list
-    db.ref(`/${teamId}/currentSpeaker`).set(email);
+    db.ref(`/${teamId}/attendees`).push(email);
 
     if (teamInfo.owner.email === userInfo.email) {
       // set current speaker to be this email (first speaker is the owner)
-      db.ref(`/${teamId}/attendees`).push(email);
+      db.ref(`/${teamId}/currentSpeaker`).set(email);
     }
 
   }
