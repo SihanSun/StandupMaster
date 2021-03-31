@@ -17,6 +17,7 @@ import CardScreen from './src/screens/CardScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 import EditPropertyScreen from './src/screens/EditPropertyScreen';
 import TeamProfileScreen from './src/screens/TeamProfileScreen';
+import PendingMemberScreen from './src/screens/PendingMemberScreen';
 
 // context provider
 import { Provider as SharedContextProvider } from './src/context/SharedContext';
@@ -44,7 +45,12 @@ const navigator = createSwitchNavigator({
     home: {
       screen: createStackNavigator({
         Home: HomeScreen,
-        TeamProfile: TeamProfileScreen,
+        TeamProfile: createStackNavigator({
+          EditTeam: TeamProfileScreen,
+          pendingMember: PendingMemberScreen,
+        },{
+          headerMode: null
+        }),
         EditTeamProperty: EditPropertyScreen
       }, {
         headerMode: null

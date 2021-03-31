@@ -14,6 +14,7 @@ const TEAM_NAME = "Team Name";
 const ANNOUNCEMENT = "Announcement";
 const INVITE = "Invite Member";
 const REMOVE = "Remove Member";
+const PENDING = "Pending Members";
 
 class TeamProfileScreen extends Component {
 
@@ -97,10 +98,15 @@ class TeamProfileScreen extends Component {
   renderProperty = ({ item }) => {
     const { name, value, setValue } = item;
     const { navigation } = this.props;
-    const shouldLimit = item.name === TEAM_NAME || item.name === INVITE;
-    const onPress = () => { navigation.navigate('EditTeamProperty', 
-        { property: item, onSave: (value) => setValue(value), limit: { shouldLimit }}
-      )};
+    let onPress;
+    if (name===PENDING) {
+      onPress = () => navigation.navigate("pendingMember");
+    } else {
+      const shouldLimit = item.name === TEAM_NAME || item.name === INVITE;
+      onPress = () => { navigation.navigate('EditTeamProperty', 
+          { property: item, onSave: (value) => setValue(value), limit: { shouldLimit }}
+        )};
+    }
     return (
       <PropertyTemplate
         name={name}
@@ -145,6 +151,9 @@ class TeamProfileScreen extends Component {
       name: REMOVE,
       value: 'Enter email here',
       setValue: (value) => removeTeamMember(jwtToken, teamId, value)
+    }, {
+      name: PENDING,
+      value: teamInfo.pendingMembers.length,
     }];
 
     return (
