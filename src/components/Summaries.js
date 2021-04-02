@@ -9,9 +9,10 @@ import styles from '../styles';
 const Summaries = ({ summaries, onRequestClose }) => {
 
   const renderSummaryCard = ({item}) => {
-    const { id, prevWork, block, planToday, name, pictureUrl } = item;
+    const { id, isBlocked, prevWork, block, planToday, name, pictureUrl } = item;
     return (
       <SummaryCard
+        isBlocked={isBlocked}
         prevWork={prevWork}
         block={block}
         planToday={planToday}
@@ -31,7 +32,7 @@ const Summaries = ({ summaries, onRequestClose }) => {
       <View style={styles.cardContainer}>
         <FlatList
           data={summaries}
-          keyExtractor={item => item.email}
+          keyExtractor={item => item.id}
           renderItem={renderSummaryCard}
         />
       </View>

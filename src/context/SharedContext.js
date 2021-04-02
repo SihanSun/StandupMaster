@@ -32,7 +32,7 @@ const signOut = dispatch => {
     Auth.signOut({ global: true })
       .then(() => {
         dispatch({ type: 'sign_out'});
-        navigate('resolveAuth')
+        navigate('loginFlow')
       });
   }
 }

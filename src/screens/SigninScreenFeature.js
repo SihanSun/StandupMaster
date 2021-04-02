@@ -72,7 +72,7 @@ export default function SignInScreenFeature({ navigation }) {
         />
         <SignButton title="Login" onPress={signIn} />
         <View style={styles.footerButtonContainer}>
-          <TouchableOpacity onPress={() => navigation.navigate('signup')}>
+          <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
             <Text style={styles.forgotPasswordButtonText}>
               Don't have an account? Sign Up
             </Text>

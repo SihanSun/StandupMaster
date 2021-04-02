@@ -65,7 +65,7 @@ export default function SignUpScreenFeature({ navigation }) {
           </TouchableOpacity>
         </View>
         <View style={styles.footerButtonContainer}>
-            <TouchableOpacity onPress={() => navigation.navigate('signin')}>
+            <TouchableOpacity onPress={() => navigation.navigate('Signin')}>
                 <Text style={styles.forgotPasswordButtonText}>Already have an account? Sign In</Text>
             </TouchableOpacity>
         </View>

@@ -27,7 +27,7 @@ import { Provider as SharedContextProvider } from './src/context/SharedContext';
 import { setNavigator } from './src/navigationRef';
 import styles, { StyleSheet } from './src/styles';
 
-const signInfeature = false;
+const signInfeature = true;
 // navigation
 const navigator = createSwitchNavigator({
   resolveAuth: ResolveAuthScreen,
@@ -42,24 +42,14 @@ const navigator = createSwitchNavigator({
     }
   }),
   joinTeam: JoinTeamScreen,
+  Meeting: JoinMeetingScreen,
   mainFlow: createBottomTabNavigator({
     home: {
       screen: createStackNavigator({
-        Home: createStackNavigator({
-          Team: HomeScreen,
-          Meeting: JoinMeetingScreen
-        },{
-          headerMode: null,
-          defaultNavigationOptions: {
-            gestureEnabled: false
-          }
-        }),
         TeamProfile: createStackNavigator({
-          EditTeam: TeamProfileScreen,
-          pendingMember: PendingMemberScreen,
-        },{
-          headerMode: null
-        }),
+        Home: HomeScreen,
+        TeamProfile: TeamProfileScreen,
+        pendingMember: PendingMemberScreen,
         EditTeamProperty: EditPropertyScreen
       }, {
         headerMode: null

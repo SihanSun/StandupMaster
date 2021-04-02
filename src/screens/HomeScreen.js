@@ -75,6 +75,7 @@ class HomeScreen extends Component {
 
         return {
           id: email,
+          isBlocked,
           prevWork,
           block,
           planToday,
@@ -278,9 +279,7 @@ class HomeScreen extends Component {
         </TouchableOpacity>
         <View style={{flexDirection: 'row', marginTop: 10}}>
           <View style={[{flex: 3, height: 80}, styles.textBox]}>
-            <ScrollView>
-              <Text>{teamAnnouncement}</Text>
-            </ScrollView>
+            <Text>{teamAnnouncement}</Text>
           </View>
           <View style={{flex: 1, alignItems: 'center'}}>
             <TouchableOpacity
@@ -316,6 +315,13 @@ class HomeScreen extends Component {
     // const { time } = this.readTimestamp(lastModified);
 
     const status = isBlocked ? require('../../assets/delete.png') : require('../../assets/checkmark.png');
+
+    const { state: { teamInfo } } = this.context;
+    let name = displayName;
+    if (email === teamInfo.owner.email) {
+        name += " (Owner)"
+    }
+
     return (
       <RowTemplate
         onPress={async () => {
@@ -323,7 +329,7 @@ class HomeScreen extends Component {
           this.setState({selectedSummaries: [summary], modalVisible: true})
         }}
         image={{uri: profilePictureUrl}}
-        title={displayName}
+        title={name}
         description={email}
         secondaryImage={status}
         metaInfo={null}
@@ -402,13 +408,16 @@ class HomeScreen extends Component {
     return (
       <SafeAreaView style={styles.container}>
         <ScrollView style={styles.mainUI}
+          stickyHeaderIndices={[0]}
           refreshControl={
             <RefreshControl
               refreshing={isRefreshing}
               onRefresh={this.fetchTeamInfo}
             />}>
-          {this.renderHeader()}
-          {this.renderTabBar()}
+          <View style={{backgroundColor: 'white'}}>
+            {this.renderHeader()}
+            {this.renderTabBar()}
+          </View>
           {this.renderMainSection()}
           <Modal
             animationType={"slide"}

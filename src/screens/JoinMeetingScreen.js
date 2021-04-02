@@ -103,7 +103,7 @@ class JoinMeetingScreen extends Component {
       db.ref(`${teamId}/currentSpeaker`).remove();
     }
     // goback
-    this.props.navigation.goBack();
+    this.props.navigation.navigate('home');
   }
 
   fetchMembeStatus = async () => {
@@ -343,7 +343,7 @@ class JoinMeetingScreen extends Component {
               padding: 10, alignItems: 'center', 
               backgroundColor: '#599DFF'}}>
               <Text style={{fontSize: 20, color: 'white'}}>
-                Quite Meeting
+                Quit Meeting
               </Text>
             </TouchableOpacity>
           </View>
