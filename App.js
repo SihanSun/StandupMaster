@@ -46,7 +46,6 @@ const navigator = createSwitchNavigator({
   mainFlow: createBottomTabNavigator({
     home: {
       screen: createStackNavigator({
-        TeamProfile: createStackNavigator({
         Home: HomeScreen,
         TeamProfile: TeamProfileScreen,
         pendingMember: PendingMemberScreen,
