@@ -5,7 +5,7 @@ import { Alert} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {SignButton, SignTextInput, styles} from '../components/SignButtons'
 
-export default function ConfirmSignUp({ navigation }) {
+export default function ConfirmationScreen({ navigation }) {
     const [username, setUsername] = useState('');
     const [authCode, setAuthCode] = useState('');
     const [resendEmail, setEmail] = useState(''); // for resending code
@@ -17,8 +17,8 @@ export default function ConfirmSignUp({ navigation }) {
             navigation.navigate('signin');
         } 
         catch (error) {
-            // console.log(' Verification code does not match. Please enter a valid verification code.', error);
-            Alert.alert(error.message)
+            Alert.alert(error.message);
+            console.log(error);
         }
     }
 
@@ -29,8 +29,8 @@ export default function ConfirmSignUp({ navigation }) {
             toggleModalVisibility();
         } 
         catch (error) {
-            // console.log('Invalid Email.', error);
-            Alert.alert(error.message)
+            Alert.alert(error.message);
+            console.log(error);
         }
     }
 
@@ -41,7 +41,7 @@ export default function ConfirmSignUp({ navigation }) {
   
     return (
     <SafeAreaView style={styles.safeAreaContainer}>
-        <View style={styles.ccontainer}>
+        <View style={styles.mainContainer}>
             <Text style={styles.title}>Confirm Sign Up</Text>
             <SignTextInput
                 value={username}
@@ -60,9 +60,9 @@ export default function ConfirmSignUp({ navigation }) {
                 keyboardType="numeric"
             />
             <SignButton title="Confirm" onPress={confirmSignUp} />
-            <View style={styles.footerButtonContainer}>
+            <View style={styles.belowBigButtonContainer}>
                 <TouchableOpacity onPress={toggleModalVisibility}>
-                    <Text style={styles.forgotPasswordButtonText}>Resend Verification Code</Text>
+                    <Text style={styles.redButtonText}>Resend Verification Code</Text>
                 </TouchableOpacity>
             </View>
         </View>

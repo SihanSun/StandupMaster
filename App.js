@@ -6,12 +6,12 @@ import { MaterialIcons, Ionicons, MaterialCommunityIcons, FontAwesome } from '@e
 
 // screen
 import ResolveAuthScreen from './src/screens/ResolveAuthScreen';
-import SignInScreenFeature from './src/screens/SigninScreenFeature';
-import SignUpScreenFeature from './src/screens/SignupScreenFeature';
+import SplashScreen from './src/screens/SplashScreen';
 import SignInScreen from './src/screens/SigninScreen';
 import SignUpScreen from './src/screens/SignupScreen';
 import ConfirmationScreen from './src/screens/ConfirmationScreen';
 import CreateTeamScreen from './src/screens/CreateTeamScreen';
+import ForgotPasswordScreen from './src/screens/ForgotPasswordScreen'
 import JoinTeamScreen from './src/screens/JoinTeamScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import CardScreen from './src/screens/CardScreen';
@@ -29,14 +29,15 @@ import { Provider as SharedContextProvider } from './src/context/SharedContext';
 import { setNavigator } from './src/navigationRef';
 import styles, { StyleSheet } from './src/styles';
 
-const signInfeature = true;
 // navigation
 const navigator = createSwitchNavigator({
   resolveAuth: ResolveAuthScreen,
+  splash: SplashScreen,
   loginFlow: createStackNavigator({
-    Signin: signInfeature ? { screen: SignInScreenFeature } : { screen: SignInScreen }, // if feature if true; call signinscreenFeature name
-    Signup: signInfeature ? { screen: SignUpScreenFeature } : { screen: SignUpScreen }, // prod env, dev env, switching env, 
-    confirm: { screen: ConfirmationScreen }
+    signin: { screen: SignInScreen },
+    signup: { screen: SignUpScreen },
+    confirm: { screen: ConfirmationScreen },
+    forgotPassword: { screen: ForgotPasswordScreen }
   }, {
     headerMode: 'none',
     navigationOptions: {
@@ -95,7 +96,7 @@ const navigator = createSwitchNavigator({
     },
   })
 }, {
-  initialRouteName: signInfeature ? 'loginFlow': 'resolveAuth'
+  initialRouteName: 'splash'
 })
 
 const App = createAppContainer(navigator);
