@@ -1,8 +1,8 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { shallow, mount } from 'enzyme';
 
 import HomeScreen from '../../src/screens/HomeScreen';
-import { Context, Provider } from '../../src/context/SharedContext';
+import { Provider } from '../../src/context/SharedContext';
 
 import teamAPI from '../../src/api/teams';
 
@@ -33,14 +33,13 @@ describe('HomeScreen', () => {
     teamAPI.getTeam = jest.fn(async () => {
       return teamInfo
     });
-
     
   })
   it('should fetch team in startup', () => {
     const wrapper = shallow(
-      <SharedContextProvider value={{state: { cognitoUser, userInfo }}}>
+      <Provider value={{state: { cognitoUser, userInfo }}}>
         <HomeScreen/>
-      </SharedContextProvider>
+      </Provider>
     );
   
     const homeScreen = wrapper.find('HomeScreen').dive();
