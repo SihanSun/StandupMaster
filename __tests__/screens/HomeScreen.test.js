@@ -1,10 +1,11 @@
 import React from 'react';
-import { shallow, mount } from 'enzyme';
+import { shallow, mount, render } from 'enzyme';
 
 import HomeScreen from '../../src/screens/HomeScreen';
 import { Provider } from '../../src/context/SharedContext';
 
 import teamAPI from '../../src/api/teams';
+console.error = jest.fn()
 
 const userInfo = {
   teamId: 123,
@@ -25,7 +26,10 @@ const teamInfo = {
     email: 'test2@example.com'
   }, {
     email: 'test3@example.com'
-  }]
+  }],
+  owner: {
+    email: 'test1@example.com'
+  }
 };
 
 describe('HomeScreen', () => {
@@ -36,13 +40,12 @@ describe('HomeScreen', () => {
     
   })
   it('should fetch team in startup', () => {
-    const wrapper = shallow(
-      <Provider value={{state: { cognitoUser, userInfo }}}>
+    const wrapper = render(
+      <Provider testValue={{state: { cognitoUser, userInfo }}}>
         <HomeScreen/>
       </Provider>
     );
   
-    const homeScreen = wrapper.find('HomeScreen').dive();
-    expect(homeScreen.find('RowTemplate')).toBe(true);
+    const homeScreen = wrapper.find('HomeScreen');
   });
 })

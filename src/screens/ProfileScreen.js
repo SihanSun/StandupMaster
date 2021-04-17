@@ -15,6 +15,7 @@ const FIRST_NAME = "First Name";
 const LAST_NAME = "Last Name";
 
 class ProfileScreen extends Component {
+  // static contextType = SharedContext;
   static contextType = SharedContext;
 
   constructor(props) {
@@ -39,6 +40,7 @@ class ProfileScreen extends Component {
 
   changePicture = async () => {
     await this.requestImagePermission();
+    ImagePicker.requestMediaLibraryPermissionsAsync()
 
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -62,10 +64,12 @@ class ProfileScreen extends Component {
     return (
       <View style={{marginHorizontal: 20, marginTop: 20, backgroundColor: 'white', alignItems: 'center'}}>
         <Image
+          testID="picture"
           style={styles.largeImage}
           source={pictureSrc}
         />
         <TouchableOpacity 
+          testID="changePicture"
           onPress={this.changePicture}
           style={{ marginVertical: 20 }}>
           <Text style={[{color: '#599DFF'}, styles.textRegular]}>Change Photo</Text>
