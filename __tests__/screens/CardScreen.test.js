@@ -1,5 +1,5 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { shallow, render } from 'enzyme';
 import { AsyncStorage } from 'react-native';
 import PropTypes from 'prop-types';
 import * as StatusAPI from '../../src/api/userStatus';
@@ -23,7 +23,10 @@ const cognitoUser = {
   signInUserSession: {
     idToken: {
       jwtToken: 'test token'
-    }
+    },
+  },
+  attributes: {
+    email: 'test email'
   }
 }
 
@@ -46,6 +49,11 @@ describe('CardScreen', () => {
     }
 
     AsyncStorage.getItem = jest.fn();
+    AsyncStorage.setItem = jest.fn();
+  })
+
+  afterEach(() => {
+    jest.useFakeTimers();
   })
 
   it('should fetch prev work locally', (done) => {
@@ -243,10 +251,86 @@ describe('CardScreen', () => {
           item={item}
         />
       );
-      console.log(SingleEntryCard.props());
       expect(SingleEntryCard.props().title).toBe('test title');
       done();
     });
   })
 
+  it('should render content correctly in renderFunc', (done) => {
+    wrapper = shallow(
+      <CardScreen/>, {context}
+    )
+
+    setImmediate(() => {
+      const item = {content: 'test content'}
+      const RenderItem = wrapper.find('FlatList').at(0).props().renderItem;
+      const SingleEntryCard = shallow(
+        <RenderItem
+          item={item}
+        />
+      );
+      expect(SingleEntryCard.props().content).toBe('test content');
+      done();
+    });
+  })
+
+  it('should render user picture', (done) => {
+    wrapper = shallow(
+      <CardScreen/>, {context}
+    )
+
+    setImmediate(() => {
+      const image = wrapper.find({testID: 'picture'}).at(0);
+      expect(image.props().source.uri).toBe(userInfo.profilePictureUrl);
+      done();
+    })
+  })
+
+  it('should save prevWork to local', (done) => {
+    wrapper = shallow(
+      <CardScreen/>, {context}
+    )
+
+    wrapper.instance().onSave('prevWork', 'prev work content');
+
+    setImmediate(() => {
+      expect(AsyncStorage.setItem).toHaveBeenCalledWith('prevWork', 'prev work content');
+      done();
+    })
+  })
+
+  it('should save block to local', (done) => {
+    wrapper = shallow(
+      <CardScreen/>, {context}
+    )
+
+    wrapper.instance().onSave('block', 'block content');
+
+    setImmediate(() => {
+      expect(AsyncStorage.setItem).toHaveBeenCalledWith('block', 'block content');
+      done();
+    })
+  })
+
+  it('should save planToday to local', (done) => {
+    wrapper = shallow(
+      <CardScreen/>, {context}
+    )
+
+    wrapper.instance().onSave('planToday', 'planToday content');
+
+    setImmediate(() => {
+      expect(AsyncStorage.setItem).toHaveBeenCalledWith('planToday', 'planToday content');
+      done();
+    })
+  })
+
+  it('should upload user status', async () => {
+    wrapper = shallow(
+      <CardScreen/>, {context}
+    )
+
+    await wrapper.find({testID: 'upload'}).props().onPress();
+    expect(context.uploadUserStatus).toHaveBeenCalled();
+  }) 
 })

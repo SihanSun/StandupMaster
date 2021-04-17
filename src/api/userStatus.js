@@ -16,7 +16,6 @@ const userStatusAPI = (jwtToken) => {
 
 export const getStatus = async (jwtToken, userEmail) => {
   try {
-    console.log(userEmail);
     const result = await userStatusAPI(jwtToken).get(`/${userEmail}`);
 		return result.data;
   } catch (error) {

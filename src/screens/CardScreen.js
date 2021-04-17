@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { View, Text, SafeAreaView, Image, FlatList, Button, TouchableOpacity, AsyncStorage, Alert } from 'react-native';
+import { View, Text, SafeAreaView, Image, FlatList, TouchableOpacity, AsyncStorage, Alert } from 'react-native';
 
 import SingleEntryCard from '../components/SingleEntryCard';
 import styles from '../styles';
 import { Context as SharedContext } from '../context/SharedContext';
-import { getStatus, putStatus } from '../api/userStatus';
-import { getUsers, putUsers } from '../api/users';
+import { getStatus } from '../api/userStatus';
+import { getUsers } from '../api/users';
 
 const PREV_WORK = "prevWork";
 const IS_BLOCKED = "isBlocked";
@@ -103,6 +103,7 @@ class CardScreen extends Component {
         <View style={{flexDirection: 'row', marginBottom: 10}}>
           <View style={{alignItems: 'center'}}>
             <Image
+              testID="picture"
               style={styles.largeImage}
               source={pictureSrc}
             />
@@ -235,6 +236,7 @@ class CardScreen extends Component {
           />
           <View style={{borderTopWidth: 2, borderTopColor: '#f2f0eb'}}>
             <TouchableOpacity
+              testID="upload"
               onPress={this.upload}
               disabled={disableUpload}
               style={{marginVertical: 20, marginHorizontal: 20, borderRadius: 10, 
