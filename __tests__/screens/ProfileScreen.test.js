@@ -7,8 +7,6 @@ import * as TeamsAPI from '../../src/api/teams';
 
 import ProfileScreen from '../../src/screens/ProfileScreen';
 
-const flushPromises = () => new Promise(setImmediate);
-
 const userInfo = {
   teamId: 123,
   email: 'test@example.com',
