@@ -17,6 +17,7 @@ import HomeScreen from './src/screens/HomeScreen';
 import CardScreen from './src/screens/CardScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 import EditPropertyScreen from './src/screens/EditPropertyScreen';
+import ViewPropertyScreen from './src/screens/ViewPropertyScreen';
 import TeamProfileScreen from './src/screens/TeamProfileScreen';
 import JoinMeetingScreen from './src/screens/JoinMeetingScreen';
 import PendingMemberScreen from './src/screens/PendingMemberScreen';
@@ -51,7 +52,8 @@ const navigator = createSwitchNavigator({
         Home: HomeScreen,
         TeamProfile: TeamProfileScreen,
         pendingMember: PendingMemberScreen,
-        EditTeamProperty: EditPropertyScreen
+        EditTeamProperty: EditPropertyScreen,
+        ViewTeamProperty: ViewPropertyScreen,
       }, {
         headerMode: null
       }),
