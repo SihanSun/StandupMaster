@@ -25,6 +25,15 @@ export const getTeam = async (jwtToken, teamId) => {
   } 
 }
 
+export const postTeam = async (jwtToken, data) => {
+  try {
+    console.log(data)
+    await teamAPI(jwtToken).post('/', data);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export const putTeam = async (jwtToken, teamId, data) => {
   try {
     console.log(data)

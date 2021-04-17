@@ -66,6 +66,18 @@ const JoinTeamScreen = ({navigation}) => {
           Join Team
         </Text>
       </TouchableOpacity>
+      <Text style={{fontSize: 20, color: 'grey', alignSelf: 'center'}}>
+         --- or ---
+      </Text>
+      <TouchableOpacity
+        onPress={() => navigation.navigate('createTeam')}
+        style={{marginVertical: 20, marginHorizontal: 20, borderRadius: 10, 
+        padding: 10, alignItems: 'center', 
+        backgroundColor:'#599DFF'}}>
+        <Text style={{fontSize: 20, color: 'white'}}>
+          Create Team
+        </Text>
+      </TouchableOpacity>
     </View>
     )
   }

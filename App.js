@@ -11,6 +11,7 @@ import SignUpScreenFeature from './src/screens/SignupScreenFeature';
 import SignInScreen from './src/screens/SigninScreen';
 import SignUpScreen from './src/screens/SignupScreen';
 import ConfirmationScreen from './src/screens/ConfirmationScreen';
+import CreateTeamScreen from './src/screens/CreateTeamScreen';
 import JoinTeamScreen from './src/screens/JoinTeamScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import CardScreen from './src/screens/CardScreen';
@@ -41,7 +42,8 @@ const navigator = createSwitchNavigator({
       gestureDirection: 'horizontal'
     }
   }),
-  joinTeam: JoinTeamScreen,
+  joinTeam: JoinTeamScreen,  
+  createTeam: CreateTeamScreen,
   Meeting: JoinMeetingScreen,
   mainFlow: createBottomTabNavigator({
     home: {
