@@ -25,6 +25,7 @@ const Summaries = ({ summaries, onRequestClose }) => {
   return (
     <SafeAreaView style={[styles.container]}>
       <TouchableOpacity 
+        testID={"requestClose"}
         onPress={onRequestClose}
         style={styles.modalHeader}>
         <AntDesign name="down" size={24} color="white" />

@@ -15,6 +15,7 @@ const FIRST_NAME = "First Name";
 const LAST_NAME = "Last Name";
 
 class ProfileScreen extends Component {
+  // static contextType = SharedContext;
   static contextType = SharedContext;
 
   constructor(props) {
@@ -39,6 +40,7 @@ class ProfileScreen extends Component {
 
   changePicture = async () => {
     await this.requestImagePermission();
+    ImagePicker.requestMediaLibraryPermissionsAsync()
 
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -62,10 +64,12 @@ class ProfileScreen extends Component {
     return (
       <View style={{marginHorizontal: 20, marginTop: 20, backgroundColor: 'white', alignItems: 'center'}}>
         <Image
+          testID="picture"
           style={styles.largeImage}
           source={pictureSrc}
         />
         <TouchableOpacity 
+          testID="changePicture"
           onPress={this.changePicture}
           style={{ marginVertical: 20 }}>
           <Text style={[{color: '#599DFF'}, styles.textRegular]}>Change Photo</Text>
@@ -153,12 +157,14 @@ class ProfileScreen extends Component {
           />
           <View style={{borderTopWidth: 2, borderTopColor: '#f2f0eb', flexDirection: 'row'}}>
             <TouchableOpacity
+              testID="quitTeam"
               onPress={this.quitTeam}
               style={{marginVertical: 20, marginHorizontal: 20, borderRadius: 10, 
               padding: 10, alignItems: 'center', backgroundColor: '#599DFF', flex: 1}}>
               <Text style={{fontSize: 20, color: 'white'}}>Quit Team</Text>
             </TouchableOpacity>
             <TouchableOpacity
+              testID="signOut"
               style={{marginVertical: 20, marginHorizontal: 20, borderRadius: 10, 
               padding: 10, alignItems: 'center', backgroundColor: '#599DFF', flex: 1}} onPress={() => signOut()}>
               <Text style={{fontSize: 20, color: 'white'}}>Sign out</Text>

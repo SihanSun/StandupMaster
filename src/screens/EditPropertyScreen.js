@@ -20,14 +20,16 @@ const EditPropertyScreen = ({ navigation, route}) => {
     return (
       <View style={{padding: 20, flexDirection: 'row', borderBottomWidth: 2, borderBottomColor: '#f2f0eb'}}>
         <TouchableOpacity 
+          testID="back"
           onPress={() => navigation.goBack()}
           style={{justifyContent: 'center'}}>
           <AntDesign name="left" size={24} color="black" />
         </TouchableOpacity>
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-          <Text style={[styles.textLarge]}>Edit your {name.toLowerCase()}</Text>
+          <Text testID="title" style={[styles.textLarge]}>Edit your {name.toLowerCase()}</Text>
         </View>
         <TouchableOpacity 
+          testID="save"
           style={{justifyContent: 'center'}}
           onPress={() => {
             onSave(val);
@@ -50,6 +52,7 @@ const EditPropertyScreen = ({ navigation, route}) => {
           <Text style={[styles.textRegular, {color: 'grey'}]}>{name}</Text>
           <View style={{marginVertical: 10, flexDirection: 'row', alignItems: 'center'}}>
             <TextInput
+              testID="input"
               multiline={shouldLimit ? false : true}
               maxLength={shouldLimit ? MAX_LENGTH : null}
               style={[{ flex: 1, paddingBottom: 48}, styles.textLarge,]}
