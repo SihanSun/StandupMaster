@@ -71,7 +71,7 @@ export const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: 'white'
     },
-    ccontainer: {
+    mainContainer: {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center'
@@ -83,16 +83,29 @@ export const styles = StyleSheet.create({
         marginVertical: 15
     },
     footerButtonContainer: {
+        flexDirection: 'column',
+        alignSelf: 'center',
+        paddingBottom: 25
+    },
+    forgotButtonContainer: {
         marginVertical: 15,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignSelf: 'flex-end',
+        flexDirection: 'row',
+        borderRadius: 25,
+        paddingRight: 15,
     },
-    forgotPasswordButtonText: {
+    belowBigButtonContainer: {
+        flexDirection: 'column',
+        alignSelf: 'center',
+        padding: 20
+    },
+    redButtonText: {
         color: 'tomato',
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: '600'
     },
-    confirmButtonText: {
+    greyButtonText: {
         color: 'grey',
         fontSize: 18,
         fontWeight: '600'
