@@ -27,7 +27,7 @@ Amplify.configure({
 
         // OPTIONAL - Amazon Cognito Web Client ID (26-char alphanumeric string)
         // userPoolWebClientId: '3qujane35tmocgn641cf0q11is',
-        userPoolWebClientId: '53jj7124qq3s5q898k10q8i7mu',
+        userPoolWebClientId: '63sov1dtii7alkfp8mfttieabn',
 
         // OPTIONAL - Enforce user authentication prior to accessing AWS resources or not
         mandatorySignIn: false,
@@ -61,8 +61,8 @@ Amplify.configure({
         oauth: {
             domain: 'standup-master.auth.us-east-2.amazoncognito.com',
             scope: ['email', 'openid', 'aws.cognito.signin.user.admin', 'profile'],
-            redirectSignIn: 'exp://eq-9p5.anonymous.standupmaster.exp.direct',
-            redirectSignOut: 'exp://eq-9p5.anonymous.standupmaster.exp.direct',
+            redirectSignIn: 'exp://5n-j2b.chaibot.standupmaster.exp.direct',
+            redirectSignOut: 'exp://5n-j2b.chaibot.standupmaster.exp.direct',
             // redirectSignIn: 'StandupMaster://',
             // redirectSignOut: 'StandupMaster://',
             responseType: 'code', // or 'token', note that REFRESH token will only be generated when the responseType is code

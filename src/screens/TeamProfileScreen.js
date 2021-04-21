@@ -15,6 +15,7 @@ const ANNOUNCEMENT = "Announcement";
 const INVITE = "Invite Member";
 const REMOVE = "Remove Member";
 const PENDING = "Pending Members";
+const CODE = "Team Code";
 
 class TeamProfileScreen extends Component {
 
@@ -101,6 +102,11 @@ class TeamProfileScreen extends Component {
     let onPress;
     if (name===PENDING) {
       onPress = () => navigation.navigate("pendingMember");
+    } else if (name === CODE) {
+      console.log(CODE)
+      onPress = () => { navigation.navigate('ViewTeamProperty', 
+          { property: item, onSave: (value) => setValue(value)}
+        )};
     } else {
       const shouldLimit = item.name === TEAM_NAME || item.name === INVITE;
       onPress = () => { navigation.navigate('EditTeamProperty', 
@@ -154,6 +160,9 @@ class TeamProfileScreen extends Component {
     }, {
       name: PENDING,
       value: teamInfo.pendingMembers.length,
+    }, {
+      name: CODE,
+      value: teamInfo.id,
     }];
 
     return (

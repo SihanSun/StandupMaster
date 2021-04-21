@@ -11,11 +11,13 @@ import SignUpScreenFeature from './src/screens/SignupScreenFeature';
 import SignInScreen from './src/screens/SigninScreen';
 import SignUpScreen from './src/screens/SignupScreen';
 import ConfirmationScreen from './src/screens/ConfirmationScreen';
+import CreateTeamScreen from './src/screens/CreateTeamScreen';
 import JoinTeamScreen from './src/screens/JoinTeamScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import CardScreen from './src/screens/CardScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 import EditPropertyScreen from './src/screens/EditPropertyScreen';
+import ViewPropertyScreen from './src/screens/ViewPropertyScreen';
 import TeamProfileScreen from './src/screens/TeamProfileScreen';
 import JoinMeetingScreen from './src/screens/JoinMeetingScreen';
 import PendingMemberScreen from './src/screens/PendingMemberScreen';
@@ -41,7 +43,8 @@ const navigator = createSwitchNavigator({
       gestureDirection: 'horizontal'
     }
   }),
-  joinTeam: JoinTeamScreen,
+  joinTeam: JoinTeamScreen,  
+  createTeam: CreateTeamScreen,
   Meeting: JoinMeetingScreen,
   mainFlow: createBottomTabNavigator({
     home: {
@@ -49,7 +52,8 @@ const navigator = createSwitchNavigator({
         Home: HomeScreen,
         TeamProfile: TeamProfileScreen,
         pendingMember: PendingMemberScreen,
-        EditTeamProperty: EditPropertyScreen
+        EditTeamProperty: EditPropertyScreen,
+        ViewTeamProperty: ViewPropertyScreen,
       }, {
         headerMode: null
       }),
