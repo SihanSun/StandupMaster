@@ -1,4 +1,4 @@
-import React, { useContext, Component } from 'react';
+import React, { Component } from 'react';
 import { View, Text, SafeAreaView, Image, TouchableOpacity, FlatList, Platform } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as ImageManipulator from 'expo-image-manipulator';
@@ -6,8 +6,7 @@ import * as ImageManipulator from 'expo-image-manipulator';
 import styles from '../styles';
 import PropertyTemplate from '../components/PropertyTemplate';
 import { Context as SharedContext } from '../context/SharedContext';
-import { getUsers } from '../api/users';
-import { removeTeamMember } from '../api/teams';
+import { removeTeamMember, deleteTeam } from '../api/teams';
 
 const EMAIL = "Email";
 const DISPLAY_NAME = "Display Name";
@@ -112,8 +111,16 @@ class ProfileScreen extends Component {
     setUserLastName(jwtToken, userInfo, value);
   }
 
+  deleteTeam = async () => {
+    const { state: { cognitoUser, userInfo } } = this.context;
+    const jwtToken = cognitoUser.signInUserSession.idToken.jwtToken;
+    const { teamId } = userInfo;
+    await deleteTeam(jwtToken, teamId);
+    this.props.navigation.navigate('joinTeam');
+  }
+
   quitTeam = async () => {
-    const { state: { cognitoUser, userInfo }, setUserLastName } = this.context;
+    const { state: { cognitoUser, userInfo } } = this.context;
     const jwtToken = cognitoUser.signInUserSession.idToken.jwtToken;
     const { email, teamId } = userInfo;
     await removeTeamMember(jwtToken, teamId, email);
@@ -121,10 +128,11 @@ class ProfileScreen extends Component {
   }
 
   render() {
-    const { state: { userInfo }, signOut } = this.context;
+    const { state: { userInfo, teamInfo }, signOut } = this.context;
     const {
       email, displayName, firstName, lastName
     } = userInfo;
+    const isOwner = teamInfo ? teamInfo.owner.email === userInfo.email : false;
     const properties = [{
       name: EMAIL,
       value: email,
@@ -158,10 +166,10 @@ class ProfileScreen extends Component {
           <View style={{borderTopWidth: 2, borderTopColor: '#f2f0eb', flexDirection: 'row'}}>
             <TouchableOpacity
               testID="quitTeam"
-              onPress={this.quitTeam}
+              onPress={isOwner? this.deleteTeam : this.quitTeam}
               style={{marginVertical: 20, marginHorizontal: 20, borderRadius: 10, 
               padding: 10, alignItems: 'center', backgroundColor: '#599DFF', flex: 1}}>
-              <Text style={{fontSize: 20, color: 'white'}}>Quit Team</Text>
+              <Text style={{fontSize: 20, color: 'white'}}>{isOwner? "Delete Team" : "Quit Team"}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               testID="signOut"

@@ -44,6 +44,10 @@ class HomeScreen extends Component {
     const teamId = userInfo.teamId;
 
     const teamInfo = await getTeam(jwtToken, teamId);
+    if (!teamInfo) {
+      this.props.navigation.navigate('joinTeam');
+      return;
+    }
     setTeamInfo(teamInfo);
 
     const members = teamInfo.members;
