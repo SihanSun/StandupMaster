@@ -47,7 +47,7 @@ export default function SplashScreen({ navigation }) {
 
     useEffect(() => {
         checkUser();
-    });
+    }, []);
 
     return (
         <SafeAreaView style={styles.safeAreaContainer}>
