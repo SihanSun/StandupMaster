@@ -67,6 +67,7 @@ class TeamProfileScreen extends Component {
     return (
       <View style={{padding: 20, flexDirection: 'row'}}>
         <TouchableOpacity 
+		  testID="back"
           onPress={() => navigation.goBack()}
           style={{justifyContent: 'center'}}>
           <AntDesign name="left" size={24} color="black" />
@@ -84,10 +85,12 @@ class TeamProfileScreen extends Component {
     return (
       <View style={{marginHorizontal: 20, marginTop: 20, backgroundColor: 'white', alignItems: 'center'}}>
         <Image
+		  testID="picture"
           style={styles.largeImage}
           source={pictureSrc}
         />
         <TouchableOpacity 
+		  testID="changePicture"
           onPress={this.changePicture}
           style={{ marginVertical: 20 }}>
           <Text style={[{color: '#599DFF'}, styles.textRegular]}>Change Photo</Text>
