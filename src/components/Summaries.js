@@ -33,7 +33,7 @@ const Summaries = ({ summaries, onRequestClose }) => {
       <View style={styles.cardContainer}>
         <FlatList
           data={summaries}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item.timestamp}
           renderItem={renderSummaryCard}
         />
       </View>

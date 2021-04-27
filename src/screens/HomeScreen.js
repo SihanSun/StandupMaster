@@ -8,6 +8,7 @@ import Summaries from '../components/Summaries';
 import styles from '../styles';
 import { Context as SharedContext } from '../context/SharedContext';
 import { getTeam } from '../api/teams';
+import { getRecord, addRecord } from '../api/meetingRecord';
 import { getStatus } from '../api/userStatus';
 const PROFILE_PICTURE_DEFAULT = require('../../assets/meeting.jpg');
 
@@ -33,24 +34,32 @@ class HomeScreen extends Component {
   }
 
   componentDidMount() {
-    this.fetchTeamInfo();
-    this.fetchPastRecords();
+    this.refresh();
   }
 
-  fetchTeamInfo = async () => {
+  refresh = async () => {
     this.setState({isRefreshing: true});
+
     const { state: { cognitoUser, userInfo }, setTeamInfo } = this.context;
     const jwtToken = cognitoUser.signInUserSession.idToken.jwtToken;
     const teamId = userInfo.teamId;
 
+    // get teamInfo
     const teamInfo = await getTeam(jwtToken, teamId);
     setTeamInfo(teamInfo);
 
     const members = teamInfo.members;
+
+    const nameMap = new Map();
+    const pictureMap = new Map();
     
     const membersStatus = [];
     for (let i = 0; i < members.length; i = i+1) {
       const { email, profilePictureUrl, displayName, firstName, lastName } = members[i];
+
+      nameMap.set(email, displayName);
+      pictureMap.set(email, profilePictureUrl);
+
       const { presentation, isBlocked } = await getStatus(jwtToken, email);
       membersStatus.push({
         email,
@@ -62,6 +71,35 @@ class HomeScreen extends Component {
         lastName
       });
     }
+
+    // get past record
+    const meetingRecords = await getRecord(jwtToken, teamId);
+
+    const pastRecords = [];
+    for (let i = 0; i < meetingRecords.length; i += 1) {
+      const record = meetingRecords[i];
+      const timestamp = record.dateTime;
+      const summaries = [];
+      const userStatuses = record.userStatuses;
+      for (let j = 0; j < userStatuses.length; j += 1) {
+        const status = userStatuses[j];
+        summaries.push({
+          isBlocked: status.isBlocked,
+          prevWork: status.presentation.prevWork,
+          block: status.presentation.blockedBy,
+          planToday: status.presentation.planToday,
+          name: nameMap.get(status.email),
+          email: status.email,
+          pictureUrl: pictureMap.get(status.email)
+        })
+      }
+      pastRecords.push({
+        timestamp,
+        summaries
+      });
+    }
+    this.setState({pastRecords});
+
     this.setState({membersStatus, isRefreshing: false});
   }
 
@@ -84,147 +122,6 @@ class HomeScreen extends Component {
         } 
       }
     }
-
-  }
-
-  fetchPastRecords = () => {
-    const pastRecords = [
-      {
-        timestamp: 1614306931,
-        summaries: [
-          {
-            isBlocked: false,
-            prevWork: 'this is the prev work',
-            block: 'N/A',
-            planToday: 'Finish the modal',
-            name: 'Sihan Sun',
-            email: 'sihan.sun@yale.edu',
-            pictureUrl: null
-          },
-          {
-            email: 'jiaqi.yang@yale.edu',
-            isBlocked: false,
-            prevWork: 'this is the prev work',
-            block: 'N/A',
-            planToday: 'Database Schema',
-            name: 'Jasky Yang',
-            pictureUrl: null
-          }
-        ]
-      },{
-        timestamp: 1614268030,
-        summaries: [
-          {
-            email: 'sihan.sun@yale.edu',
-            isBlocked: false,
-            prevWork: 'this is the prev work',
-            block: 'N/A',
-            planToday: 'Finish the modal. To test this functionality, I wrote this SUPER long text to check how the card will be resized',
-            name: 'Sihan Sun',
-            pictureUrl: null
-          },
-          {
-            email: 'jiaqi.yang@yale.edu',
-            isBlocked: false,
-            prevWork: 'this is the prev work',
-            block: 'N/A',
-            planToday: 'Database Schema',
-            name: 'Jasky Yang',
-            pictureUrl: null
-          }
-        ]
-      },{
-        timestamp: 1614106931,
-        summaries: [
-          {
-            email: 'sihan.sun@yale.edu',
-            isBlocked: false,
-            prevWork: 'this is the prev work',
-            block: 'N/A',
-            planToday: 'Finish the modal',
-            name: 'Sihan Sun',
-            pictureUrl: null
-          },
-          {
-            email: 'jiaqi.yang@yale.edu',
-            isBlocked: false,
-            prevWork: 'this is the prev work',
-            block: 'N/A',
-            planToday: 'Database Schema',
-            name: 'Jasky Yang',
-            pictureUrl: null
-          }
-        ]
-      },{
-        timestamp: 1614006931,
-        summaries: [
-          {
-            email: 'sihan.sun@yale.edu',
-            isBlocked: false,
-            prevWork: 'this is the prev work',
-            block: 'N/A',
-            planToday: 'Finish the modal',
-            name: 'Sihan Sun',
-            pictureUrl: null
-          },
-          {
-            email: 'jiaqi.yang@yale.edu',
-            isBlocked: false,
-            prevWork: 'this is the prev work',
-            block: 'N/A',
-            planToday: 'Database Schema',
-            name: 'Jasky Yang',
-            pictureUrl: null
-          }
-        ]
-      },{
-        timestamp: 1613906931,
-        summaries: [
-          {
-            email: 'sihan.sun@yale.edu',
-            isBlocked: false,
-            prevWork: 'this is the prev work',
-            block: 'N/A',
-            planToday: 'Finish the modal',
-            name: 'Sihan Sun',
-            pictureUrl: null
-          },
-          {
-            email: 'jiaqi.yang@yale.edu',
-            isBlocked: false,
-            prevWork: 'this is the prev work',
-            block: 'N/A',
-            planToday: 'Database Schema',
-            name: 'Jasky Yang',
-            pictureUrl: null
-          }
-        ]
-      },{
-        timestamp: 1613806931,
-        summaries: [
-          {
-            email: 'sihan.sun@yale.edu',
-            isBlocked: false,
-            prevWork: 'this is the prev work',
-            block: 'N/A',
-            planToday: 'Finish the modal',
-            name: 'Sihan Sun',
-            pictureUrl: null
-          },
-          {
-            email: 'jiaqi.yang@yale.edu',
-            isBlocked: false,
-            prevWork: 'this is the prev work',
-            block: 'N/A',
-            planToday: 'Database Schema',
-            name: 'Jasky Yang',
-            pictureUrl: null
-          }
-        ]
-      },
-    ];
-
-    this.setState({ pastRecords });
   }
 
   renderHeader = () => {
@@ -303,7 +200,7 @@ class HomeScreen extends Component {
     const minutes = "0" + date.getMinutes();
     const seconds = "0" + date.getSeconds();
 
-    const day = "" + date.getFullYear() + "/" + date.getMonth() + "/" + date.getDate();
+    const day = "" + date.getFullYear() + "/" + (date.getMonth()+1) + "/" + date.getDate();
     const time = hours + ":" + minutes.substr(-2) + ":" + seconds.substr(-2);
     return { day, time };
   }
@@ -412,7 +309,7 @@ class HomeScreen extends Component {
           refreshControl={
             <RefreshControl
               refreshing={isRefreshing}
-              onRefresh={this.fetchTeamInfo}
+              onRefresh={this.refresh}
             />}>
           <View style={{backgroundColor: 'white'}}>
             {this.renderHeader()}

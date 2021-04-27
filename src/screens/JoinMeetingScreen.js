@@ -6,6 +6,7 @@ import Summaries from '../components/Summaries';
 import { getStatus } from '../api/userStatus';
 import styles from '../styles';
 import { db } from '../config';
+import { addRecord } from '../api/meetingRecord'
 
 class JoinMeetingScreen extends Component {
 
@@ -87,6 +88,14 @@ class JoinMeetingScreen extends Component {
       if (attendees.length > 1) {
         return;
       }
+
+      // generate record
+      const { state: { cognitoUser, userInfo }, setTeamInfo } = this.context;
+      const jwtToken = cognitoUser.signInUserSession.idToken.jwtToken;
+      const teamId = userInfo.teamId;
+
+      const timestamp = Math.floor(Date.now() / 1000).toString();
+      addRecord(jwtToken, teamId, timestamp);
     }
 
     const { state: {userInfo}} = this.context;
