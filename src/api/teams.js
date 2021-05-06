@@ -79,4 +79,12 @@ export const deletePendingMember = async (jwtToken, teamId, email) => {
   }
 }
 
+export const deleteTeam = async (jwtToken, teamId) => {
+  try {
+    await teamAPI(jwtToken).delete(`/${teamId}`);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export default teamAPI;
